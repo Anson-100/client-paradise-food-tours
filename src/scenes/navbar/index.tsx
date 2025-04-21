@@ -3,21 +3,20 @@ import { Link, useLocation } from "react-router-dom"
 import LinkDesktop from "./LinkDesktop"
 import LinkMobile from "./LinkMobile"
 import LogoLinkNav from "./LogoLinkNav"
+import CheckDatesAction from "@/shared/CheckDatesAction"
 
 import {
   Bars2Icon,
   XMarkIcon,
   HomeIcon,
   PaperAirplaneIcon,
-  WrenchScrewdriverIcon,
-  UserCircleIcon,
   StarIcon,
-  InformationCircleIcon,
   QuestionMarkCircleIcon,
-  PhotoIcon,
+  SquaresPlusIcon,
+  CalendarDateRangeIcon,
 } from "@heroicons/react/24/solid"
 
-import { PhoneIcon } from "@heroicons/react/24/outline"
+// import { PhoneIcon } from "@heroicons/react/24/outline"
 
 import { SelectedPage } from "@/shared/types"
 import useMediaQuery from "@/hooks/useMediaQuery"
@@ -31,7 +30,7 @@ type Props = {
 const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
   const flexBetween = "flex items-center justify-between"
   const [isMenuToggled, setIsMenuToggled] = useState<boolean>(false)
-  const isAboveMediumScreens = useMediaQuery("(min-width: 1460px)")
+  const isAboveMediumScreens = useMediaQuery("(min-width: 1160px)")
 
   const navbarBackground = isTopOfPage ? "" : ""
 
@@ -50,13 +49,17 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
   }, [])
 
   // Check if the current route is `/waivers`
-  const isRouteOne = location.pathname === "/routeOne"
+  const isSimpleNavbar =
+    location.pathname === "/routeOne" ||
+    location.pathname.startsWith("/tours") ||
+    location.pathname.startsWith("/admin")
+
   // const isRouteTwo = location.pathname === "/routeTwo"
 
   return (
     <nav className="">
       <div
-        className={`${navbarBackground} ${flexBetween} border-b border-neutral-300 fixed  top-0 z-30 w-full max-w-full bg-neutral-100 h-[72px] `}
+        className={`${navbarBackground} ${flexBetween} fixed bg-zinc-50 top-0 z-30 w-full max-w-full  h-[72px] `}
       >
         <div className={`${flexBetween} mx-auto w-full px-4 sm:px-0 sm:w-5/6`}>
           <div className={`${flexBetween} w-full gap-16`}>
@@ -64,8 +67,8 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
             <LogoLinkNav />
 
             {/* RIGHT SIDE */}
-            {isRouteOne ? (
-              // Simplified Navbar for Waivers Page
+            {isSimpleNavbar ? (
+              // Simplified Navbar for FAQ Route Page
               <div>
                 <Link
                   to="/"
@@ -81,10 +84,20 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
               </div>
             ) : isAboveMediumScreens ? (
               // FULL NAV ITEMS=================================================================================
-              <div className={`${flexBetween} gap-8`}>
+              <div className={`${flexBetween} gap-8 `}>
                 <div
                   className={`${flexBetween} gap-4 text-md  my-2 pl-4 pr-2 rounded-lg`}
                 >
+                  {" "}
+                  <Link
+                    to="/admin"
+                    onClick={() => {
+                      sessionStorage.setItem("selectedPage", "admin")
+                    }}
+                    className="flex items-center border-transparent hover:border-neutral-300 text-zinc-50 justify-center mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold"
+                  >
+                    0
+                  </Link>
                   <LinkDesktop
                     scrollTo={SelectedPage.Home}
                     displayText="Home"
@@ -93,13 +106,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                   />
                   <LinkDesktop
                     scrollTo={SelectedPage.SectionOne}
-                    displayText="Services"
-                    selectedPage={selectedPage}
-                    setSelectedPage={setSelectedPage}
-                  />
-                  <LinkDesktop
-                    scrollTo={SelectedPage.SectionTwo}
-                    displayText="About Us"
+                    displayText="Tours"
                     selectedPage={selectedPage}
                     setSelectedPage={setSelectedPage}
                   />
@@ -109,12 +116,6 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                     selectedPage={selectedPage}
                     setSelectedPage={setSelectedPage}
                   />{" "}
-                  <LinkDesktop
-                    scrollTo={SelectedPage.RouteTwo}
-                    displayText="Gallery"
-                    selectedPage={selectedPage}
-                    setSelectedPage={setSelectedPage}
-                  />
                   <LinkDesktop
                     scrollTo={SelectedPage.ContactUs}
                     displayText="Contact Us"
@@ -131,41 +132,17 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                   >
                     FAQ
                   </Link>{" "}
-                  {/* <Link
-                    to="/routeTwo"
-                    onClick={() => {
-                      sessionStorage.setItem("selectedPage", "routetwo")
-                    }}
-                    className="flex items-center  border-transparent hover:border-neutral-300 text-zinc-800 justify-center  mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold"
-                  >
-                    Gallery
-                  </Link> */}
-                  {/* <a
-                    href="https://v3.gorilladesk.com/auth/login/?nav=menu"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex hover:cursor-pointer items-center font-semibold text-zinc-800 justify-center gap-2 py-2 px-4 rounded-md border border-neutral-300 ml-2"
-                  >
-                    Customer Sign In
-                    <div className="text-neutral-500 text-lg">&rarr;</div>
-                  </a> */}
-                  <button
-                    onClick={() => (window as any).GorillaDesk("showPortal")}
-                    className="flex items-center font-semibold text-zinc-800 justify-center gap-2 py-2 px-4 rounded-md border border-neutral-300 ml-2 hover:cursor-pointer"
-                  >
-                    Customer Sign In
-                    <div className="text-neutral-500 text-lg">→</div>
-                  </button>
+                  <CheckDatesAction />
                 </div>
               </div>
             ) : (
               <div className="flex items-center justify-center">
-                <a
+                {/* <a
                   href="tel:+1234567890"
                   className="flex items-center gap-2 px-4 py-2 text-zinc-400  rounded-lg hover:bg-zinc-100 transition"
                 >
                   <PhoneIcon className="w-6 h-6" />
-                </a>
+                </a> */}
 
                 <button
                   className="rounded-full p-2 hover:cursor-pointer"
@@ -187,7 +164,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
       {!isAboveMediumScreens && isMenuToggled && (
         <div
           ref={menuRef}
-          className={`fixed mt-[71px] top-0 right-0 w-full md:w-2/5 sm:rounded-bl-md overflow-hidden z-30 bg-neutral-100 border-b sm:border-l border-neutral-300 ${
+          className={`fixed mt-[71px] top-0 right-0 w-full md:w-2/5 sm:rounded-bl-md overflow-hidden z-30 bg-zinc-50 border-b sm:border-l border-neutral-300 ${
             isMenuToggled ? "h-auto opacity-100" : "h-0 opacity-0"
           }`}
         >
@@ -205,20 +182,11 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
 
               <LinkMobile
                 scrollTo={SelectedPage.SectionOne}
-                displayText="Services"
+                displayText="Tours"
                 selectedPage={selectedPage}
                 setSelectedPage={setSelectedPage}
                 toggleMenu={() => setIsMenuToggled(false)}
-                Icon={WrenchScrewdriverIcon}
-              />
-
-              <LinkMobile
-                scrollTo={SelectedPage.SectionTwo}
-                displayText="About Us"
-                selectedPage={selectedPage}
-                setSelectedPage={setSelectedPage}
-                toggleMenu={() => setIsMenuToggled(false)}
-                Icon={InformationCircleIcon}
+                Icon={SquaresPlusIcon}
               />
 
               <LinkMobile
@@ -229,14 +197,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                 toggleMenu={() => setIsMenuToggled(false)}
                 Icon={StarIcon}
               />
-              <LinkMobile
-                scrollTo={SelectedPage.RouteTwo}
-                displayText="Gallery"
-                selectedPage={selectedPage}
-                setSelectedPage={setSelectedPage}
-                toggleMenu={() => setIsMenuToggled(false)}
-                Icon={PhotoIcon}
-              />
+
               <LinkMobile
                 scrollTo={SelectedPage.ContactUs}
                 displayText="Contact Us"
@@ -253,7 +214,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                     sessionStorage.setItem("selectedPage", "routeone")
                     setIsMenuToggled(false)
                   }}
-                  className=" font-semibold pt-4 pb-2 w-full sm:w-5/6 px-4 mx-auto flex items-center text-zinc-500 hover:text-zinc-600"
+                  className=" font-semibold pt-4 pb-2 w-full sm:w-5/6 px-4 mx-auto flex items-center text-md text-zinc-500 hover:text-zinc-600"
                 >
                   <QuestionMarkCircleIcon className="h-5 w-5 mr-4" />
                   <p>FAQ</p>
@@ -281,16 +242,20 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                     <span className="text-neutral-400 text-lg">&rarr;</span>
                   </p>
                 </a> */}
-                <button
-                  onClick={() => (window as any).GorillaDesk("showPortal")}
-                  className="hover:cursor-pointer font-semibold pt-4 pb-2 w-full sm:w-5/6 px-4 mx-auto flex items-center text-zinc-500 hover:text-zinc-600"
-                >
-                  <UserCircleIcon className="h-5 w-5 mr-4" />
-                  <p>
-                    Sign In{" "}
-                    <span className="text-neutral-400 text-lg">&rarr;</span>
-                  </p>
-                </button>
+                <CheckDatesAction
+                  customButton={onClick => (
+                    <button
+                      onClick={onClick}
+                      className="hover:cursor-pointer font-semibold pt-4 pb-2 w-full sm:w-5/6 px-4 mx-auto flex items-center text-zinc-500 hover:text-zinc-600"
+                    >
+                      <CalendarDateRangeIcon className="h-5 w-5 mr-4" />
+                      <p>
+                        Check Dates{" "}
+                        <span className="text-neutral-400 text-lg">&rarr;</span>
+                      </p>
+                    </button>
+                  )}
+                />
               </div>
             </>
           </div>

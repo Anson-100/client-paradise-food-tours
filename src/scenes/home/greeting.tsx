@@ -9,11 +9,11 @@ const Greeting = () => {
       const hours = now.getHours() // Local time zone is automatically used
 
       if (hours < 12) {
-        setGreeting("Good morning, welcome to Lawn Harmony")
+        setGreeting("Good morning, welcome to Paradise Food Tours")
       } else if (hours < 18) {
-        setGreeting("Good afternoon, welcome to Lawn Harmony")
+        setGreeting("Good afternoon, welcome to Paradise Food Tours")
       } else {
-        setGreeting("Good evening, welcome to Lawn Harmony")
+        setGreeting("Good evening, welcome to Paradise Food Tours")
       }
     }
 

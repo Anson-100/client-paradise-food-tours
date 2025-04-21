@@ -5,9 +5,9 @@ import { useState } from "react"
 
 import {
   BuildingOffice2Icon,
-  EnvelopeIcon,
   PhoneIcon,
-} from "@heroicons/react/24/outline"
+  UserGroupIcon,
+} from "@heroicons/react/24/solid"
 
 type Props = {
   setSelectedPage: (value: SelectedPage) => void
@@ -70,41 +70,9 @@ const ContactUs = ({ setSelectedPage }: Props) => {
         className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2"
         onViewportEnter={() => setSelectedPage(SelectedPage.ContactUs)}
       >
-        <div className="relative px-6 pt-24 pb-20 sm:py-36 xl:py-40 flex items-center lg:static lg:px-8">
+        <div className="relative px-6 flex pt-44 lg:static lg:px-8">
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
-            <div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-neutral-100 ring-1 ring-neutral-900/10 lg:w-1/2">
-              <svg
-                aria-hidden="true"
-                className="absolute inset-0 size-full stroke-neutral-300 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
-              >
-                <defs>
-                  <pattern
-                    x="100%"
-                    y={-1}
-                    id="83fd4e5a-9d52-42fc-97b6-718e5d7ee527"
-                    width={200}
-                    height={200}
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <path d="M130 200V.5M.5 .5H200" fill="none" />
-                  </pattern>
-                </defs>
-                <rect fill="white" width="100%" height="100%" strokeWidth={0} />
-                <svg
-                  x="100%"
-                  y={-1}
-                  className="overflow-visible fill-neutral-200/60"
-                >
-                  <path d="M-470.5 0h201v201h-201Z" strokeWidth={0} />
-                </svg>
-                <rect
-                  fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)"
-                  width="100%"
-                  height="100%"
-                  strokeWidth={0}
-                />
-              </svg>
-            </div>
+            <div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden lg:w-1/2"></div>
             <div className="flex flex-col gap-2">
               <h3 className="font-semibold tracking-tight text-zinc-600">
                 Contact Us
@@ -115,49 +83,28 @@ const ContactUs = ({ setSelectedPage }: Props) => {
             </div>
 
             <p className="mt-6 text-lg/8 text-gray-600">
-              Have questions or need a quote? We're here to help with all your
-              lawn and landscaping needs. Reach out by phone, email, or the form
-              on this page and we’ll get back to you soon. We look forward to
-              hearing from you!
+              Questions about our tours? Whether you're planning a private
+              event, booking for a group, or just curious about what’s on the
+              menu — we’d love to hear from you. Reach out by phone, email, or
+              using the form on this page. Let’s talk food!
             </p>
             <dl className="mt-10 space-y-4 text-base/7 text-gray-600">
               <div className="flex gap-x-4">
                 <dt className="flex-none">
                   <span className="sr-only">Address</span>
-                  <BuildingOffice2Icon
+                  <UserGroupIcon
                     aria-hidden="true"
-                    className="h-7 w-6 text-emerald-500"
+                    className="h-7 w-6 text-teal-500"
                   />
                 </dt>
-                <dd>
-                  555 Gulf of America Ave
-                  <br />
-                  Bradenton, FL 34208
-                </dd>
-              </div>
-              <div className="flex gap-x-4">
-                <dt className="flex-none">
-                  <span className="sr-only">Telephone</span>
-                  <PhoneIcon
-                    aria-hidden="true"
-                    className="h-7 w-6 text-emerald-500"
-                  />
-                </dt>
-                <dd>
-                  <a
-                    href="tel:+1 (555) 234-5678"
-                    className="hover:text-gray-900"
-                  >
-                    +1 (555) 555-5555
-                  </a>
-                </dd>
+                <dd>Group Tours</dd>
               </div>
               <div className="flex gap-x-4">
                 <dt className="flex-none">
                   <span className="sr-only">Email</span>
-                  <EnvelopeIcon
+                  <BuildingOffice2Icon
                     aria-hidden="true"
-                    className="h-7 w-6 text-emerald-500"
+                    className="h-7 w-6 text-teal-500"
                   />
                 </dt>
                 <dd>
@@ -165,7 +112,24 @@ const ContactUs = ({ setSelectedPage }: Props) => {
                     href="mailto:hello@example.com"
                     className="hover:text-gray-900"
                   >
-                    customerservice@lawnharmony.com
+                    Corporate Events
+                  </a>
+                </dd>
+              </div>
+              <div className="flex gap-x-4">
+                <dt className="flex-none">
+                  <span className="sr-only">Telephone</span>
+                  <PhoneIcon
+                    aria-hidden="true"
+                    className="h-7 w-6 text-teal-500"
+                  />
+                </dt>
+                <dd>
+                  <a
+                    href="tel:+1 (555) 234-5678"
+                    className="hover:text-gray-900"
+                  >
+                    866-EAT-SWFL
                   </a>
                 </dd>
               </div>
@@ -338,7 +302,45 @@ const ContactUs = ({ setSelectedPage }: Props) => {
                   )}
                 </div>
               </div>
+              <fieldset className="sm:col-span-2">
+                <legend className="block text-sm/6 font-semibold text-gray-900">
+                  Group Size
+                </legend>
+                <div className="mt-4 space-y-4 text-sm/6 text-gray-600">
+                  <div className="flex gap-x-2.5">
+                    <input
+                      defaultValue="under_25k"
+                      id="budget-under-25k"
+                      name="budget"
+                      type="radio"
+                      className="relative mt-1 size-4 appearance-none rounded-full border border-gray-300 bg-zinc-50 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-teal-500 checked:bg-teal-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
+                    />
+                    <label htmlFor="budget-under-25k">Just me</label>
+                  </div>
+                  <div className="flex gap-x-2.5">
+                    <input
+                      defaultValue="25k-50k"
+                      id="budget-25k-50k"
+                      name="budget"
+                      type="radio"
+                      className="relative mt-1 size-4 appearance-none rounded-full border border-gray-300 bg-zinc-50  before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-teal-500 checked:bg-teal-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
+                    />
+                    <label htmlFor="budget-25k-50k">Group of 2 - 14</label>
+                  </div>
+                  <div className="flex gap-x-2.5">
+                    <input
+                      defaultValue="50k-100k"
+                      id="budget-50k-100k"
+                      name="budget"
+                      type="radio"
+                      className="relative mt-1 size-4 appearance-none rounded-full border border-gray-300 bg-zinc-50  before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-teal-500 checked:bg-teal-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
+                    />
+                    <label htmlFor="budget-50k-100k">Corporate event</label>
+                  </div>
+                </div>
+              </fieldset>
             </div>
+            <div className="w-full h-[1px] bg-gray-300 mt-8"></div>
             <div className="mt-8 flex flex-col items-end gap-3">
               {/* Feedback Message */}
               {submissionStatus === "success" && (
@@ -356,13 +358,13 @@ const ContactUs = ({ setSelectedPage }: Props) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`hover:cursor-pointer rounded-md px-5 py-3 w-full sm:w-auto font-semibold text-white shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600 ${
+                className={`hover:cursor-pointer rounded-md px-3.5 py-2.5 w-full sm:w-auto font-semibold text-white shadow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600 ${
                   isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-emerald-600 hover:bg-emerald-500"
+                    : "bg-teal-500 hover:bg-zinc-400"
                 }`}
               >
-                {isSubmitting ? "Submitting..." : "Send message"}
+                {isSubmitting ? "Submitting..." : "Send Message"}
               </button>
             </div>
           </div>

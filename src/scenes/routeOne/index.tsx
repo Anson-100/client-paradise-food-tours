@@ -22,32 +22,33 @@ const RouteOne: React.FC = () => {
   const PolicyItems: PolicyItem[] = [
     {
       id: "policy1",
-      question: "What services do you offer?",
+      question: "What types of food tours do you offer?",
       answer:
-        "We provide lawn care, landscaping, hardscaping, irrigation, and seasonal maintenance.",
+        "We offer a variety of guided food tours that showcase the best local cuisine, from hidden gems to well-known favorites across Naples and Bonita Springs.",
     },
     {
       id: "policy2",
-      question: "How often should I mow my lawn?",
+      question: "How long is each tour?",
       answer:
-        "It depends on the season, but generally, mowing once a week keeps your lawn healthy.",
+        "Most tours last between 3 to 4 hours and include multiple stops for tastings, drinks, and local insights.",
     },
     {
       id: "policy3",
-      question: "Do you offer free estimates?",
-      answer: "Yes! Contact us to schedule a free consultation and quote.",
+      question: "Do I need to book in advance?",
+      answer:
+        "Yes, tours often fill up quickly — we recommend booking in advance to secure your spot.",
     },
     {
       id: "policy4",
-      question: "What areas do you serve?",
+      question: "What areas do your tours cover?",
       answer:
-        "We serve Sarasota, Bradenton, Lakewood Ranch, and surrounding areas.",
+        "We currently run tours in downtown Naples, 5th Avenue, Mercato, and select spots in Bonita Springs.",
     },
     {
       id: "policy5",
-      question: "Do you offer recurring maintenance plans?",
+      question: "Can you accommodate dietary restrictions?",
       answer:
-        "Yes, we have flexible maintenance plans to keep your lawn looking great year-round.",
+        "We do our best to accommodate dietary needs. Let us know when booking, and we’ll coordinate with our partner restaurants.",
     },
   ]
 
@@ -56,10 +57,6 @@ const RouteOne: React.FC = () => {
       id="routeone"
       className="relative isolate overflow-hidden  min-h-[100vh] pb-12 sm:pb-24 w-full px-5"
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-neutral-200/10 ring-1 shadow-xl shadow-neutral-600/10 ring-neutral-200 sm:-mr-80 lg:-mr-96"
-      />
       {/* HEADER--------- */}
       <div className="sm:mx-auto sm:text-center">
         {" "}

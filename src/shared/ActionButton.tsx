@@ -1,21 +1,18 @@
-import React from "react"
-import AnchorLink from "react-anchor-link-smooth-scroll"
-import { SelectedPage } from "./types"
+// import { CalendarDateRangeIcon } from "@heroicons/react/24/solid"
 
 type Props = {
-  children: React.ReactNode
-  setSelectedPage: (value: SelectedPage) => void
+  onClick?: () => void
+  children?: React.ReactNode
 }
 
-const ActionButton = ({ children, setSelectedPage }: Props) => {
+const ActionButton = ({ onClick, children = "Check Dates" }: Props) => {
   return (
-    <AnchorLink
-      className="rounded-md bg-secondary-500 dark:bg-secondary-500-dark px-10 py-2 hover:bg-primary-500 dark:hover:bg-primary-500-dark hover:text-white"
-      onClick={() => setSelectedPage(SelectedPage.ContactUs)}
-      href={`#${SelectedPage.ContactUs}`}
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2 px-3.5 py-2.5 bg-teal-500 text-white rounded-md hover:bg-teal-550 text-md font-semibold cursor-pointer shadow"
     >
       {children}
-    </AnchorLink>
+    </button>
   )
 }
 
