@@ -1,28 +1,30 @@
 import { useState, useEffect } from "react"
 
-const Greeting = () => {
+type Props = {
+  name: string
+}
+
+const Greeting = ({ name }: Props) => {
   const [greeting, setGreeting] = useState("")
 
   useEffect(() => {
     const getGreeting = () => {
       const now = new Date()
-      const hours = now.getHours() // Local time zone is automatically used
+      const hours = now.getHours()
 
       if (hours < 12) {
-        setGreeting("Good morning, Liz")
+        setGreeting(`Good morning, ${name}`)
       } else if (hours < 18) {
-        setGreeting("Good afternoon, Liz")
+        setGreeting(`Good afternoon, ${name}`)
       } else {
-        setGreeting("Good evening, Liz")
+        setGreeting(`Good evening, ${name}`)
       }
     }
 
-    getGreeting() // Call on component load
-
-    // Optional: Update the greeting every minute (live update)
+    getGreeting()
     const interval = setInterval(getGreeting, 60000)
-    return () => clearInterval(interval) // Clean up on unmount
-  }, [])
+    return () => clearInterval(interval)
+  }, [name])
 
   return (
     <p className="text-base font-semibold text-zinc-600 tracking-tight ">

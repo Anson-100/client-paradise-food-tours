@@ -4,15 +4,16 @@ import SectionOne from "@/scenes/sectionOne"
 import SectionTwo from "@/scenes/sectionTwo"
 import Newsletter from "./scenes/newsletter"
 import LogoCloud from "./scenes/logoCloud"
-import Banner from "./shared/Banner"
-import TourWrapper from "@/scenes/tours/TourWrapper"
 
+import TourWrapper from "@/scenes/tours/TourWrapper"
+import LoginPortal from "@/admin/LoginPortal"
 import SectionThree from "@/scenes/sectionThree"
 import ContactUs from "@/scenes/contactUs"
 import RouteOne from "@/scenes/routeOne"
-// import RouteTwo from "@/scenes/routeTwo"
+import RouteTwo from "@/scenes/routeTwo"
 import ScrollToTop from "./components/ScrollToTop"
 import CTA from "@/scenes/cta"
+import RouteChangeTracker from "./RouteChangeTracker"
 
 // import TourLayout from "@/scenes/tours/TourLayout"
 
@@ -53,13 +54,16 @@ function AppContent() {
 
   return (
     <div className="app bg-black dark:bg-grayish">
-      <Navbar
-        isTopOfPage={isTopOfPage}
-        selectedPage={selectedPage}
-        setSelectedPage={setSelectedPage}
-      />
+      {!location.pathname.startsWith("/admin") &&
+        !location.pathname.startsWith("/dev-login") && (
+          <Navbar
+            isTopOfPage={isTopOfPage}
+            selectedPage={selectedPage}
+            setSelectedPage={setSelectedPage}
+          />
+        )}
 
-      {location.pathname === "/" && isTopOfPage && <Banner />}
+      {/* {location.pathname === "/" && isTopOfPage && <Banner />} */}
 
       <Routes>
         {/* Main Scrollable Page */}
@@ -92,13 +96,15 @@ function AppContent() {
 
         {/* Standalone Route for FAQ and User Login */}
         <Route path="/routeOne" element={<RouteOne />} />
+        <Route path="/routeTwo" element={<RouteTwo />} />
 
         {/* ✅ Dynamic single route for all tours */}
-        {/* <Route path="/tours/:slug" element={<TourLayout />} /> */}
+
         <Route path="/tours/:slug" element={<TourWrapper />} />
 
         {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/dev-login" element={<LoginPortal />} />
       </Routes>
     </div>
   )
@@ -107,6 +113,7 @@ function AppContent() {
 function App() {
   return (
     <Router>
+      <RouteChangeTracker />
       <ScrollToTop />
       <AppContent />
     </Router>

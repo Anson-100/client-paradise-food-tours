@@ -1,4 +1,3 @@
-import { SelectedPage } from "@/shared/types"
 import { motion } from "framer-motion"
 import { useForm, Controller } from "react-hook-form"
 import { useState } from "react"
@@ -10,10 +9,6 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/solid"
 
-type Props = {
-  setSelectedPage: (value: SelectedPage) => void
-}
-
 type FormData = {
   firstName: string
   lastName: string
@@ -22,7 +17,7 @@ type FormData = {
   message: string
 }
 
-const ContactUs = ({ setSelectedPage }: Props) => {
+const ContactAdminEditor = () => {
   const {
     register,
     handleSubmit,
@@ -71,15 +66,12 @@ const ContactUs = ({ setSelectedPage }: Props) => {
 
   return (
     <section id="contactus" className="min-h-[100vh] relative isolate ">
-      <motion.div
-        className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2"
-        onViewportEnter={() => setSelectedPage(SelectedPage.ContactUs)}
-      >
+      <motion.div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
         <div className="relative px-6 flex pt-44 lg:static lg:px-8">
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
             <div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden lg:w-1/2"></div>
             <div className="flex flex-col gap-2">
-              <h3 className="font-semibold tracking-tight text-teal-550">
+              <h3 className="font-semibold tracking-tight text-zinc-600">
                 {content.sceneTitle}
               </h3>
               <h2 className="text-4xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-5xl">
@@ -372,8 +364,13 @@ const ContactUs = ({ setSelectedPage }: Props) => {
           </div>
         </form>
       </motion.div>
+      <div className="absolute inset-0 z-50 bg-black/60 flex items-center justify-center">
+        <span className="text-white text-5xl font-bold tracking-wide uppercase">
+          Under Construction
+        </span>
+      </div>
     </section>
   )
 }
 
-export default ContactUs
+export default ContactAdminEditor

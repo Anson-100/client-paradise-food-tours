@@ -1,9 +1,7 @@
-import { motion } from "framer-motion"
-
 const Newsletter = () => {
   return (
     <section id="sectiontwo" className=" relative isolate overflow-hidden">
-      <motion.div className="overflow-hidden relative isolate">
+      <div className="overflow-hidden relative isolate">
         <div className="py-16 sm:py-24">
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="relative isolate overflow-hidden bg-zinc-900 px-6 py-24 shadow-2xl sm:rounded-3xl sm:px-24 xl:py-32">
@@ -64,7 +62,7 @@ const Newsletter = () => {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }

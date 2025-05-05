@@ -1,6 +1,6 @@
 import AnchorLink from "react-anchor-link-smooth-scroll"
 import { SelectedPage } from "@/shared/types"
-// import { Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 import LinkFooter from "./LinkFooter"
 import LogoLinkFooter from "./LogoLinkFooter"
 import IconFB from "@/assets/IconFB.svg"
@@ -40,33 +40,47 @@ const Footer = ({ selectedPage, setSelectedPage }: Props) => {
       <div className="mx-auto max-w-7xl flex flex-col items-center overflow-hidden px-6 pt-8 gap-4 lg:px-8">
         <LogoLinkFooter />
         <div className=" flex justify-center gap-x-10">
-          <span
+          <a
+            href="https://www.instagram.com/drivenfoodietours/"
+            target="_blank"
             rel="noopener noreferrer"
-            className="opacity-80 hover:opacity-100"
           >
-            <img
-              src={IconInsta}
-              alt="Instagram"
-              className="w-8 h-8 hover:cursor-pointer"
-            />
-          </span>
-          <span
+            <span className="opacity-80 hover:opacity-100">
+              <img
+                src={IconInsta}
+                alt="Instagram"
+                className="w-8 h-8 hover:cursor-pointer"
+              />
+            </span>
+          </a>
+
+          <a
+            href="https://www.facebook.com/drivenfoodietours/"
+            target="_blank"
             rel="noopener noreferrer"
-            className="opacity-80 hover:opacity-100"
           >
-            <img
-              src={IconFB}
-              alt="Facebook"
-              className="w-8 h-8 hover:cursor-pointer"
-            />
-          </span>
-          <span className="opacity-80 hover:opacity-100">
-            <img
-              src={IconYT}
-              alt="YouTube"
-              className="w-8 h-8 hover:cursor-pointer"
-            />
-          </span>
+            <span className="opacity-80 hover:opacity-100">
+              <img
+                src={IconFB}
+                alt="Facebook"
+                className="w-8 h-8 hover:cursor-pointer"
+              />
+            </span>
+          </a>
+
+          <a
+            href="https://www.youtube.com/watch?v=JSHtesXvNlw"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className="opacity-80 hover:opacity-100">
+              <img
+                src={IconYT}
+                alt="YouTube"
+                className="w-8 h-8 hover:cursor-pointer"
+              />
+            </span>
+          </a>
         </div>
         {isTourRoute ? (
           ""
@@ -82,12 +96,12 @@ const Footer = ({ selectedPage, setSelectedPage }: Props) => {
               selectedPage={selectedPage}
               setSelectedPage={setSelectedPage}
             />
-            <LinkFooter
+            {/* <LinkFooter
               scrollTo={SelectedPage.SectionTwo}
               displayText="About Us"
               selectedPage={selectedPage}
               setSelectedPage={setSelectedPage}
-            />
+            /> */}
             <LinkFooter
               scrollTo={SelectedPage.SectionThree}
               displayText="Reviews"
@@ -100,6 +114,15 @@ const Footer = ({ selectedPage, setSelectedPage }: Props) => {
               selectedPage={selectedPage}
               setSelectedPage={setSelectedPage}
             />
+            <Link
+              to="/routeTwo"
+              onClick={() => {
+                sessionStorage.setItem("selectedPage", "routeone")
+              }}
+              className="text-gray-100 group flex items-center justify-center hover:cursor-pointer hover:underline"
+            >
+              Privacy Policy
+            </Link>{" "}
             <CheckDatesAction
               customButton={onClick => (
                 <button

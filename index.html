@@ -5,6 +5,25 @@
     <link rel="icon" type="lift weights" href="/src/assets/logoMainIcon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paradise Food Tours</title>
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-NGS9L5N6ZZ"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag("js", new Date())
+
+      gtag("config", "G-NGS9L5N6ZZ", {
+        debug_mode: true,
+        linker: {
+          domains: ["paradisefoodtours.com", "d3ek7orpdupfw8.cloudfront.net"],
+        },
+      })
+    </script>
   </head>
   <body>
     <div id="root"></div>

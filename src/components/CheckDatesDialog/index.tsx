@@ -72,10 +72,11 @@ const CheckDatesDialog = ({ onClose }: Props) => {
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 top-8 z-50 overflow-hidden flex items-center justify-center p-4">
-      <div className="relative w-full max-w-3xl max-h-[90vh] bg-white shadow-xl rounded-lg overflow-hidden flex flex-col">
+    <div className="fixed inset-0 top-8 z-50 overflow-hidden  p-4">
+      <div className="h-3 max-w-3xl mx-auto bg-teal-500 rounded-t-lg mx"></div>
+      <div className="relative w-full max-w-3xl max-h-[80vh] bg-white shadow-xl rounded-b-lg overflow-hidden flex flex-col mx-auto">
         {/* HEADER */}
-        <div className="px-6 py-8 border-b border-gray-200 sticky top-0 bg-zinc-100 z-10">
+        <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-zinc-100 z-10">
           <h2 className="text-3xl sm:text-3xl font-semibold tracking-tight text-gray-900">
             Check date availability
           </h2>
@@ -86,7 +87,7 @@ const CheckDatesDialog = ({ onClose }: Props) => {
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 transition"
+            className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 transition hover:cursor-pointer"
             aria-label="Close dialog"
           >
             <XMarkIcon className="w-6 h-6" />

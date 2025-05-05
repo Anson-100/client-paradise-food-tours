@@ -16,7 +16,7 @@ import {
   CalendarDateRangeIcon,
 } from "@heroicons/react/24/solid"
 
-// import { PhoneIcon } from "@heroicons/react/24/outline"
+import { PhoneIcon } from "@heroicons/react/24/outline"
 
 import { SelectedPage } from "@/shared/types"
 import useMediaQuery from "@/hooks/useMediaQuery"
@@ -51,8 +51,10 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
   // Check if the current route is `/waivers`
   const isSimpleNavbar =
     location.pathname === "/routeOne" ||
+    location.pathname === "/routeTwo" ||
     location.pathname.startsWith("/tours") ||
-    location.pathname.startsWith("/admin")
+    location.pathname.startsWith("/admin") ||
+    location.pathname.startsWith("/dev-login")
 
   // const isRouteTwo = location.pathname === "/routeTwo"
 
@@ -89,15 +91,6 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                   className={`${flexBetween} gap-4 text-md  my-2 pl-4 pr-2 rounded-lg`}
                 >
                   {" "}
-                  <Link
-                    to="/admin"
-                    onClick={() => {
-                      sessionStorage.setItem("selectedPage", "admin")
-                    }}
-                    className="flex items-center border-transparent hover:border-neutral-300 text-zinc-50 justify-center mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold"
-                  >
-                    0
-                  </Link>
                   <LinkDesktop
                     scrollTo={SelectedPage.Home}
                     displayText="Home"
@@ -137,12 +130,12 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
               </div>
             ) : (
               <div className="flex items-center justify-center">
-                {/* <a
+                <a
                   href="tel:+1234567890"
                   className="flex items-center gap-2 px-4 py-2 text-zinc-400  rounded-lg hover:bg-zinc-100 transition"
                 >
                   <PhoneIcon className="w-6 h-6" />
-                </a> */}
+                </a>
 
                 <button
                   className="rounded-full p-2 hover:cursor-pointer"

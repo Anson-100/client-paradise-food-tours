@@ -1,124 +1,41 @@
-// import IMG from "@/assets/placeholder.png"
-import eatingIMG from "@/assets/eatingIMG.jpg"
-
-import { StarIcon } from "@heroicons/react/20/solid"
-
 export const tours = [
   {
     slug: "naples-taco-tour",
-    name: "Nacho Average Taco Tour",
-    title: "Hidden gems, bold flavors — the ultimate taco crawl",
-    heroText:
-      "Discover the authentic side of Naples with this taco tour featuring family-run spots, handmade tortillas, and ice-cold drinks.",
-    ctaLine: "Book your taco experience today.",
-    duration: "4 hrs",
-    stops: 5,
-    guests: "14+",
-    cost: "$149",
-    about: [
-      "Expect sizzling meats, smoky salsas, and fresh-made guacamole. This tour explores the tucked-away taquerias locals rave about — no chains, just flavor.",
-      "Whether you’re craving carne asada, al pastor, or something plant-based, every stop brings something different. Come hungry and leave with a newfound love for real Mexican food.",
-    ],
     galleryImages: [
       "naples-taco-tour-image-0",
       "naples-taco-tour-image-1",
       "naples-taco-tour-image-2",
       "naples-taco-tour-image-3",
     ],
-
-    bannerImage: eatingIMG,
-    included: [
-      { value: "Tacos", name: "5 local stops" },
-      { value: "Drinks", name: "Margs or aguas frescas" },
-      { value: "Guide", name: "Fluent & friendly host" },
-      { value: "Ride", name: "Hassle-free shuttle" },
-    ],
+    bannerImage: "naples-taco-tour-banner",
     testimonial: {
-      quote:
-        "I’ve lived in Naples for years and never knew these taco spots existed. Authentic, tasty, and super fun. 10/10.",
-      name: "Marco L.",
-      role: "Local foodie",
-      avatar:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80",
-      ratingIcon: StarIcon,
+      avatar: "naples-taco-tour-avatar",
     },
   },
   {
     slug: "naples-pizza-wars",
-    name: "Naples Pizza Wars Tour",
-    title: "4 pizzerias. 1 winner. you decide.",
-    heroText:
-      "Taste the top contenders in the local pizza scene and vote on your favorite — from fire-roasted Neapolitan to cheesy New York slices.",
-    ctaLine: "Join the pizza battle today.",
-    duration: "4 hrs",
-    stops: 4,
-    guests: "14+",
-    cost: "$149",
-    about: [
-      "The Naples Pizza Wars pits the city's best pies against each other in a saucy competition. At each stop, you'll sample slices and score them.",
-      "Expect everything from wood-fired crusts to deep dish classics. At the end, cast your vote and crown a champion. May the best slice win.",
-    ],
     galleryImages: [
       "naples-pizza-wars-image-0",
       "naples-pizza-wars-image-1",
       "naples-pizza-wars-image-2",
       "naples-pizza-wars-image-3",
     ],
-
-    bannerImage: eatingIMG,
-    included: [
-      { value: "Pizza", name: "4 top-rated pizzerias" },
-      { value: "Drinks", name: "Beer or soda pairings" },
-      { value: "Host", name: "Pizza-obsessed guide" },
-      { value: "Fun", name: "Cast your vote" },
-    ],
+    bannerImage: "naples-pizza-wars-banner",
     testimonial: {
-      quote:
-        "We had a blast — loved the competition aspect and the pizza was amazing. The voting made it even more fun.",
-      name: "Chelsea K.",
-      role: "Self-proclaimed pizza expert",
-      avatar:
-        "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80",
-      ratingIcon: StarIcon,
+      avatar: "naples-pizza-wars-avatar",
     },
   },
   {
     slug: "naples-italian-tour",
-    name: "Naples Italian Tour",
-    title: "Mangia like a local — Naples' Italian gems",
-    heroText:
-      "Family-owned trattorias, flowing wine, and handmade pastas — this is an indulgent evening you’ll remember long after the last bite.",
-    ctaLine: "Book your Naples Italian tour today.",
-    duration: "4 hrs",
-    stops: 3,
-    guests: "14+",
-    cost: "$175",
-    about: [
-      "Uncover the soul of Naples through the rich flavors of Italy. This tour brings you to three cherished Italian kitchens, each serving multi-course experiences steeped in tradition.",
-      "From silky pastas to classic desserts and regional wines, you’ll explore why Naples is a haven for Italian food lovers. Come hungry — leave full and happy.",
-    ],
     galleryImages: [
       "naples-italian-tour-image-0",
       "naples-italian-tour-image-1",
       "naples-italian-tour-image-2",
       "naples-italian-tour-image-3",
     ],
-
-    bannerImage: eatingIMG,
-    included: [
-      { value: "Food", name: "3 full-course meals" },
-      { value: "Drinks", name: "Wine pairings at each stop" },
-      { value: "Guide", name: "Hosted by a Naples local" },
-      { value: "Ride", name: "Shuttle included" },
-    ],
+    bannerImage: "naples-italian-tour-banner",
     testimonial: {
-      quote:
-        "Everything was just amazing — especially the pasta and dessert. I felt like I was eating in someone’s home, not a restaurant. 10/10!",
-      name: "Linda Fazio",
-      role: "Food tour regular",
-      avatar:
-        "https://images.unsplash.com/photo-1544725176-7c40e5a2c9f8?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80",
-      ratingIcon: StarIcon,
+      avatar: "naples-italian-tour-avatar",
     },
   },
 ]

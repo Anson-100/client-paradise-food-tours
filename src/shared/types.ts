@@ -1,8 +1,8 @@
 export enum SelectedPage {
   Home = "home",
-  SectionOne = "sectionone",
-  SectionTwo = "sectiontwo",
-  SectionThree = "sectionthree",
+  SectionOne = "sectionone", //tour-list
+  SectionTwo = "sectiontwo", //about
+  SectionThree = "sectionthree", //testimonials
   ContactUs = "contactus",
   RouteOne = "routeone",
   RouteTwo = "routetwo",

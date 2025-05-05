@@ -1,58 +1,33 @@
-import { useParams } from "react-router-dom"
+// import { useParams } from "react-router-dom"
 import Footer from "../footer"
 import { StarIcon } from "@heroicons/react/20/solid"
-import { tours } from "./tourData"
+// import { tours } from "./tourData"
 import { SelectedPage } from "@/shared/types"
 import useGetTourPhotos from "@/hooks/useGetTourPhotos"
+import useGetSingleTourImage from "@/hooks/useGetSingleTourImage"
+
 import CheckDatesAction from "@/shared/CheckDatesAction"
 
-// type Tour = {
-//   slug: string
-//   name: string
-//   title: string
-//   heroText: string
-//   ctaLine: string
-//   duration: string
-//   stops: number
-//   guests: string
-//   cost: string
-//   about: string[]
-//   galleryImages: string[]
-//   bannerImage: string
-//   included: {
-//     value: string
-//     name: string
-//   }[]
-//   testimonial: {
-//     quote: string
-//     name: string
-//     role: string
-//     avatar: string
-//   }
-// }
+import useGetTourContent from "@/hooks/useGetTourContent"
 
 const TourLayout = () => {
-  const { slug } = useParams()
-  const tour = tours.find(t => t.slug === slug)
+  const { tour, isLoading } = useGetTourContent()
 
-  console.log("slug:", slug)
-  console.log("tour:", tour)
+  const galleryImages = useGetTourPhotos(tour?.galleryImages ?? [])
+  const bannerImg = useGetSingleTourImage(tour?.bannerImage || "")
+  const avatarImg = useGetSingleTourImage(tour?.testimonial.avatar || "")
 
+  if (isLoading) return <div className="p-10 text-xl">Loading tour...</div>
   if (!tour) return <div className="p-10 text-xl">Tour not found.</div>
-
-  const galleryImages = useGetTourPhotos(tour.galleryImages)
 
   const {
     name,
     title,
     heroText,
     ctaLine,
-    duration,
-    stops,
-    guests,
-    cost,
+
     about,
-    bannerImage,
+
     included,
     testimonial,
   } = tour
@@ -115,9 +90,9 @@ const TourLayout = () => {
       </div>
       <div className="mx-auto max-w-2xl lg:max-w-7xl py-24 sm:py-32">
         {/* HEADER */}
-        <div className="max-w-4xl px-6 lg:px-8">
+        <div className="max-w-4xl px-6 lg:px-8 pt-8">
           <p className="text-base/7 font-semibold text-zinc-600">{name}</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
             {title}
           </h1>
           <p className="mt-6 mb-12 text-xl/8 text-balance text-gray-700">
@@ -132,7 +107,8 @@ const TourLayout = () => {
             <h2 className="text-2xl font-semibold tracking-tight text-pretty text-gray-900">
               About the tour
             </h2>
-            {about.map((paragraph, i) => (
+
+            {about.map((paragraph: string, i: number) => (
               <p
                 key={i}
                 className={`${i === 0 ? "mt-6" : "mt-8"} text-base/7 text-gray-600`}
@@ -173,30 +149,23 @@ const TourLayout = () => {
             </p>
             <hr className="mt-6 border-t border-gray-200" />
             <dl className="mt-6 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-y-2 border-b border-dotted border-gray-200 pb-4">
-                <dt className="text-sm/6 text-zinc-800">Duration</dt>
-                <dd className="order-first text-6xl font-semibold tracking-tight">
-                  {duration}
-                </dd>
-              </div>
-              <div className="flex flex-col gap-y-2 border-b border-dotted border-gray-200 pb-4">
-                <dt className="text-sm/6 text-zinc-800">Tasting Stops</dt>
-                <dd className="order-first text-6xl font-semibold tracking-tight">
-                  {stops}
-                </dd>
-              </div>
-              <div className="flex flex-col gap-y-2 border-b border-dotted border-gray-200 pb-4">
-                <dt className="text-sm/6 text-zinc-800">Guests Per Tour</dt>
-                <dd className="order-first text-6xl font-semibold tracking-tight">
-                  {guests}
-                </dd>
-              </div>
-              <div className="flex flex-col gap-y-2">
-                <dt className="text-sm/6 text-zinc-800">Cost per guest</dt>
-                <dd className="order-first text-6xl font-semibold tracking-tight">
-                  {cost}
-                </dd>
-              </div>
+              {tour.details.map(
+                (item: { name: string; value: string }, i: number) => (
+                  <div
+                    key={i}
+                    className={`flex flex-col gap-y-2 ${
+                      i < tour.details.length - 1
+                        ? "border-b border-dotted border-gray-200 pb-4"
+                        : ""
+                    }`}
+                  >
+                    <dt className="text-sm/6 text-zinc-800">{item.name}</dt>
+                    <dd className="order-first text-6xl font-semibold tracking-tight">
+                      {item.value}
+                    </dd>
+                  </div>
+                )
+              )}
             </dl>
           </div>
         </section>
@@ -214,19 +183,21 @@ const TourLayout = () => {
                 </p>
               </div>
               <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">
-                {included.map((stat, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center bg-white/5 p-8"
-                  >
-                    <dd className="text-3xl font-semibold tracking-tight text-gray-800">
-                      {stat.value}
-                    </dd>
-                    <dt className="mt-1 text-sm/6 font-semibold text-gray-600">
-                      {stat.name}
-                    </dt>
-                  </div>
-                ))}
+                {included.map(
+                  (stat: { value: string; name: string }, i: number) => (
+                    <div
+                      key={i}
+                      className="flex flex-col items-center bg-white/5 p-8"
+                    >
+                      <dd className="text-3xl font-semibold tracking-tight text-gray-800">
+                        {stat.value}
+                      </dd>
+                      <dt className="mt-1 text-sm/6 font-semibold text-gray-600">
+                        {stat.name}
+                      </dt>
+                    </div>
+                  )
+                )}
               </dl>
             </div>
           </div>
@@ -236,7 +207,7 @@ const TourLayout = () => {
         <div className=" xl:mx-auto xl:max-w-7xl xl:px-8">
           <img
             alt=""
-            src={bannerImage}
+            src={bannerImg}
             className="aspect-5/2 w-full object-cover xl:rounded-3xl"
           />
         </div>
@@ -260,7 +231,7 @@ const TourLayout = () => {
             <figcaption className="mt-10 flex items-center gap-x-6">
               <img
                 alt=""
-                src={testimonial.avatar}
+                src={avatarImg}
                 className="size-12 rounded-full bg-gray-50"
               />
               <div className="text-sm/6">
