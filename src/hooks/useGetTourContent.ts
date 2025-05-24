@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { tours as staticTours } from "@/scenes/tours/tourData"
 
 export type TourContent = {
   slug: string
@@ -53,10 +52,8 @@ const useGetTourContent = (providedSlug?: string) => {
         const res = await fetch(url)
         if (!res.ok) throw new Error("Failed to load tour content")
         const json: TourContent = await res.json()
-        const staticMatch = staticTours.find(t => t.slug === json.slug)
 
         const merged = {
-          ...staticMatch,
           ...json,
           testimonial: {
             ...json.testimonial,

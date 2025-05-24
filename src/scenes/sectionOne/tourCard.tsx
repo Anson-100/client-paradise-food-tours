@@ -4,11 +4,14 @@ import React from "react"
 import { ClockIcon, FireIcon } from "@heroicons/react/24/outline"
 import { Link } from "react-router-dom"
 import CheckDatesAction from "@/shared/CheckDatesAction" // Adjust path if needed
+import PeekBookButton from "@/shared/PeekBookButton"
+import PeekBookAction from "@/shared/PeekBookAction"
 import useGetCloudImage from "@/hooks/useGetCloudImage" // Adjust path if needed
 
 // Assuming TourCard type is defined and can be imported from a shared location
 // If not, you can define it directly in this file or create a shared types file.
 type TourCard = {
+  peekProductId: string
   title: string
   desc: string
   type: string
@@ -18,6 +21,7 @@ type TourCard = {
   link: string
   location: string
   image: string // This is the image filename
+  isWalking: boolean
 }
 
 type Props = {
@@ -62,8 +66,13 @@ const TourCard: React.FC<Props> = ({ tour }) => {
         </div>
         {tour.status === "active" ? (
           <div className="flex gap-2 pt-4 font-semibold">
-            {/* CheckDatesAction is part of the active card */}
-            <CheckDatesAction />
+            {/* === CONDITIONAL BUTTON RENDERING START === */}
+            {tour.isWalking ? (
+              <PeekBookAction productId={tour.peekProductId} /> // Using your new PeekBookButton
+            ) : (
+              <CheckDatesAction /> // Existing action for non-walking tours
+            )}
+            {/* === CONDITIONAL BUTTON RENDERING END === */}
             <Link to={tour.link}>
               <button className="hover:cursor-pointer flex items-center gap-1 px-3.5 py-2.5 text-md rounded-md text-zinc-800">
                 Read More <div className="text-zinc-600 text-lg">&rarr;</div>

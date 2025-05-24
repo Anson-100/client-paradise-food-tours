@@ -5,6 +5,8 @@ import { StarIcon } from "@heroicons/react/20/solid"
 import { SelectedPage } from "@/shared/types"
 import useGetTourPhotos from "@/hooks/useGetTourPhotos"
 import useGetSingleTourImage from "@/hooks/useGetSingleTourImage"
+import useIsWalking from "@/hooks/useIsWalking"
+import PeekBookButton from "@/shared/PeekBookButton"
 
 import CheckDatesAction from "@/shared/CheckDatesAction"
 
@@ -12,6 +14,8 @@ import useGetTourContent from "@/hooks/useGetTourContent"
 
 const TourLayout = () => {
   const { tour, isLoading } = useGetTourContent()
+  console.log("tour slug:", tour?.slug)
+  const isWalking = useIsWalking(tour?.slug)
 
   const galleryImages = useGetTourPhotos(tour?.galleryImages ?? [])
   const bannerImg = useGetSingleTourImage(tour?.bannerImage || "")
@@ -91,14 +95,18 @@ const TourLayout = () => {
       <div className="mx-auto max-w-2xl lg:max-w-7xl py-24 sm:py-32">
         {/* HEADER */}
         <div className="max-w-4xl px-6 lg:px-8 pt-8">
-          <p className="text-base/7 font-semibold text-zinc-600">{name}</p>
+          <p
+            className={`text-base/7 font-semibold ${isWalking ? "text-coral-500" : "text-teal-500"}`}
+          >
+            {name}
+          </p>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
             {title}
           </h1>
           <p className="mt-6 mb-12 text-xl/8 text-balance text-gray-700">
             {heroText}
           </p>
-          <CheckDatesAction />
+          {isWalking ? <PeekBookButton /> : <CheckDatesAction />}
         </div>
 
         {/* ABOUT + GALLERY */}
@@ -245,14 +253,16 @@ const TourLayout = () => {
         </section>
 
         {/* CTA */}
-        <section className="bg-teal-500/20 rounded-lg mx-6 lg:mx-8">
+        <section
+          className={`${isWalking ? "bg-coral-500/20" : "bg-teal-500/20"} rounded-lg mx-6 lg:mx-8`}
+        >
           <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
             <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
               Hungry for more? <br />
               {ctaLine}
             </h2>
             <div className="mt-10 flex items-center gap-x-6 lg:mt-0 lg:shrink-0">
-              <CheckDatesAction />
+              {isWalking ? <PeekBookButton /> : <CheckDatesAction />}
             </div>
           </div>
         </section>
