@@ -46,7 +46,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
               }
             }}
           >
-            <CheckDatesDialog onClose={() => setIsOpen(false)} />
+            <CheckDatesDialog onClose={() => setIsOpen(false)} tagIds={[]} />
           </div>,
           modalRootRef.current
         )}

@@ -4,7 +4,7 @@ import AnchorLink from "react-anchor-link-smooth-scroll"
 // import { StarIcon } from "@heroicons/react/24/solid"
 
 import CheckDatesAction from "@/shared/CheckDatesAction"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 import useGetCloudImage from "@/hooks/useGetCloudImage"
 import useMediaQuery from "@/hooks/useMediaQuery"
 
@@ -15,16 +15,18 @@ type Props = {
 const Home = ({ setSelectedPage }: Props) => {
   const isAboveLargeScreens = useMediaQuery("(min-width:1024px)")
   const { content, isLoading } = useGetSceneContent("home")
-  const img0 = useGetCloudImage(content?.galleryImages?.[0] || "")
-  const img1 = useGetCloudImage(content?.galleryImages?.[1] || "")
-  const img2 = useGetCloudImage(content?.galleryImages?.[2] || "")
-  const img3 = useGetCloudImage(content?.galleryImages?.[3] || "")
-  const img4 = useGetCloudImage(content?.galleryImages?.[4] || "")
+  // inside Home.tsx, remove the JSON dependency and do this:
+
+  const img0 = useGetCloudImage("home-image-0")
+  const img1 = useGetCloudImage("home-image-1")
+  const img2 = useGetCloudImage("home-image-2")
+  const img3 = useGetCloudImage("home-image-3")
+  const img4 = useGetCloudImage("home-image-4")
 
   if (isLoading || !content) return null
 
   return (
-    <section id="home" className="h-screen">
+    <section id="home" className="">
       <motion.div onViewportEnter={() => setSelectedPage(SelectedPage.Home)}>
         {isAboveLargeScreens ? (
           <div className="relative isolate">
@@ -88,7 +90,7 @@ const Home = ({ setSelectedPage }: Props) => {
                       {content.subtitle}
                     </p>
                     <div className="mt-10 flex items-center gap-x-6">
-                      <CheckDatesAction />
+                      <CheckDatesAction tourSlug={null} locationKey="hero" />
                       <AnchorLink
                         className="font-semibold text-center hover:cursor-pointer"
                         onClick={() =>
@@ -163,7 +165,7 @@ const Home = ({ setSelectedPage }: Props) => {
                     {content.subtitle}
                   </p>
                   <div className="mt-10 flex items-center gap-x-6">
-                    <CheckDatesAction />
+                    <CheckDatesAction tourSlug={null} locationKey="hero" />
                     <AnchorLink
                       className="font-semibold text-center hover:cursor-pointer"
                       onClick={() => setSelectedPage?.(SelectedPage.SectionTwo)}

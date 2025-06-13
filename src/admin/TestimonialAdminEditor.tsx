@@ -1,9 +1,9 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 import TestimonialGridCard from "./TestimonialGridCard"
-import useGetCloudImage from "@/hooks/useGetCloudImage"
+import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
 
 // Types
 

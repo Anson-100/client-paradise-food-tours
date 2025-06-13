@@ -121,11 +121,14 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                     onClick={() => {
                       sessionStorage.setItem("selectedPage", "routeone")
                     }}
-                    className="flex items-center  border-transparent hover:border-neutral-300 text-zinc-800 justify-center  mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold"
+                    className="flex items-center  border-transparent hover:border-teal-500 text-zinc-700 justify-center  mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold"
                   >
                     FAQ
                   </Link>{" "}
-                  <CheckDatesAction />
+                  <CheckDatesAction
+                    tourSlug={null} /* navbar isn’t tied to any tour */
+                    locationKey="navbar"
+                  />
                 </div>
               </div>
             ) : (
@@ -248,6 +251,8 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                       </p>
                     </button>
                   )}
+                  tourSlug={null} /* navbar isn’t tied to any tour */
+                  locationKey="navbar"
                 />
               </div>
             </>

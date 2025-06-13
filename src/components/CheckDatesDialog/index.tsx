@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline"
 
 type Props = {
   onClose: () => void
+  tagIds: number[]
 }
 
 type FormData = {
@@ -12,9 +13,10 @@ type FormData = {
   email: string
   phone: string
   message: string
+  groupSize: string
 }
 
-const CheckDatesDialog = ({ onClose }: Props) => {
+const CheckDatesDialog = ({ onClose, tagIds }: Props) => {
   const {
     register,
     handleSubmit,
@@ -33,12 +35,14 @@ const CheckDatesDialog = ({ onClose }: Props) => {
       email: data.email,
       phone: data.phone,
       message: data.message,
+      groupSize: data.groupSize,
+      tagIds,
     }
 
     try {
       setSubmissionStatus(null)
       const res = await fetch(
-        "https://m1ffj58tfe.execute-api.us-east-1.amazonaws.com/LawnHarmonySendEmail",
+        "https://pq6sx039ia.execute-api.us-east-2.amazonaws.com/dev/checkdates-submit",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -76,8 +80,8 @@ const CheckDatesDialog = ({ onClose }: Props) => {
       <div className="h-3 max-w-3xl mx-auto bg-teal-500 rounded-t-lg mx"></div>
       <div className="relative w-full max-w-3xl max-h-[80vh] bg-white shadow-xl rounded-b-lg overflow-hidden flex flex-col mx-auto">
         {/* HEADER */}
-        <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-zinc-100 z-10">
-          <h2 className="text-3xl sm:text-3xl font-semibold tracking-tight text-gray-900">
+        <div className="px-6 py-6 border-b border-gray-200 sticky top-0 bg-zinc-100 z-10">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-gray-900">
             Check date availability
           </h2>
           <p className="mt-1 text-gray-600 text-base sm:text-lg">
@@ -97,8 +101,35 @@ const CheckDatesDialog = ({ onClose }: Props) => {
         {/* FORM CONTENT */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="overflow-y-auto px-6 py-8 sm:px-10 bg-zinc-100"
+          className="overflow-y-auto px-6 py-8 sm:px-10 bg-zinc-100 relatie isolate"
         >
+          {/* {" "}BG BLOBS================== */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-64 -z-10 -translate-y-1/2 transform-gpu overflow-hidden opacity-30 blur-3xl"
+          >
+            <div
+              style={{
+                clipPath:
+                  "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+              }}
+              className="ml-[max(50%,38rem)] aspect-1313/771 w-[82.0625rem] bg-linear-to-tr from-[#FFD166] to-[#FF6B6B]"
+            />
+          </div>{" "}
+          {/* 2================== */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-20 -z-10 flex transform-gpu overflow-hidden pt-32 opacity-25 blur-3xl sm:pt-40 xl:justify-end"
+          >
+            <div
+              style={{
+                clipPath:
+                  "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+              }}
+              className="ml-[-22rem] aspect-1313/771 w-[82.0625rem] flex-none origin-top-right rotate-[30deg] bg-linear-to-tr from-[#FFD166] to-[#FF6B6B] xl:mr-[calc(50%-12rem)] xl:ml-0"
+            />
+          </div>
+          {/* FORM---------------------- */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label
@@ -245,31 +276,34 @@ const CheckDatesDialog = ({ onClose }: Props) => {
               <legend className="block text-sm font-semibold text-gray-900">
                 Group size
               </legend>
-              <div className="mt-4 flex flex-col gap-3 text-sm text-gray-600">
+
+              <div className="mt-4 flex flex-col gap-3  text-gray-600">
                 <label className="flex items-center gap-3">
                   <input
                     type="radio"
-                    value="solo"
-                    name="budget"
+                    value="Just me"
+                    {...register("groupSize")}
                     defaultChecked
                     className="accent-teal-500"
                   />
                   Just me
                 </label>
+
                 <label className="flex items-center gap-3">
                   <input
                     type="radio"
-                    value="small-group"
-                    name="budget"
+                    value="Group of 2 – 14"
+                    {...register("groupSize")}
                     className="accent-teal-500"
                   />
-                  Group of 2 - 14
+                  Group of 2 – 14
                 </label>
+
                 <label className="flex items-center gap-3">
                   <input
                     type="radio"
-                    value="corporate"
-                    name="budget"
+                    value="Corporate event"
+                    {...register("groupSize")}
                     className="accent-teal-500"
                   />
                   Corporate event
@@ -277,7 +311,6 @@ const CheckDatesDialog = ({ onClose }: Props) => {
               </div>
             </fieldset>
           </div>
-
           <div className="mt-8 border-t border-gray-300 pt-6 flex flex-col items-end gap-3">
             {submissionStatus === "success" && (
               <p className="text-sm text-emerald-600 font-medium">
@@ -292,7 +325,7 @@ const CheckDatesDialog = ({ onClose }: Props) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full sm:w-auto px-5 py-2.5 rounded-md font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              className={`w-full sm:w-auto px-5 py-2.5 rounded-md font-semibold text-white hover:cursor-pointer hover:bg-teal-550 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                 isSubmitting
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-teal-500 hover:bg-teal-5500 "

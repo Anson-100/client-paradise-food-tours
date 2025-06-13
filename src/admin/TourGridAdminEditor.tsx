@@ -1,7 +1,8 @@
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 import TourGridCard from "./TourGridCard"
+import Hint from "./Hint"
 
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 
@@ -161,6 +162,36 @@ const TourGridAdminEditor = () => {
   }
 
   const handleSaveChanges = async () => {
+    const errors: string[] = []
+
+    // Tagline guardrails
+    if (
+      formData.tagline.trim().length < 25 ||
+      formData.tagline.trim().length > 80
+    ) {
+      errors.push("Tagline must be 25-80 characters.")
+    }
+
+    // Per-tour validations
+    formData.tours.forEach((t, i) => {
+      const idx = i + 1
+      if (t.title.trim().length < 15 || t.title.trim().length > 32)
+        errors.push(`Tour ${idx}: Title must be 15-32 chars.`)
+      if (t.price.trim().length < 1 || t.price.trim().length > 5)
+        errors.push(`Tour ${idx}: Price must be 1-5 chars.`)
+      if (t.desc.trim().length < 50 || t.desc.trim().length > 95)
+        errors.push(`Tour ${idx}: Description must be 50-95 chars.`)
+      if (t.duration.trim().length < 2 || t.duration.trim().length > 10)
+        errors.push(`Tour ${idx}: Duration must be 2-10 chars.`)
+      if (t.type.trim().length < 3 || t.type.trim().length > 15)
+        errors.push(`Tour ${idx}: Type must be 3-15 chars.`)
+    })
+
+    if (errors.length) {
+      setUploadMessage({ type: "error", text: errors.join(" ") })
+      return
+    }
+
     setIsUploading(true)
     setUploadMessage(null)
 
@@ -269,40 +300,51 @@ const TourGridAdminEditor = () => {
     >
       <motion.div className="mx-auto max-w-7xl pb-12 px-5 lg:px-8">
         <div className="mb-2">
-          <div className="flex flex-col gap-2 pt-24 xl:pt-30">
-            <input
+          <div className="flex flex-col gap-6 pt-24 xl:pt-30">
+            {/* Scene title */}
+
+            {/* <input
               type="text"
               value={formData.sceneTitle}
+              maxLength={60}
               onChange={e => handleInputChange(e, "sceneTitle")}
-              className="bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2 text-blue-700  font-semibold tracking-tight"
-            />
+              className="w-full p-2 text-blue-700 font-semibold tracking-tight"
+            /> */}
+            <div className="w-full p-2 text-gray-700 font-semibold tracking-tight">
+              {formData.sceneTitle}
+            </div>
 
-            <textarea
-              value={formData.tagline}
-              onChange={e => handleInputChange(e, "tagline")}
-              rows={2}
-              className="bg-blue-50 border text-blue-700 border-blue-200 rounded-md shadow-inner p-2 text-4xl font-semibold tracking-tight w-full sm:text-5xl"
-            />
+            {/* Tagline */}
+            <div className="relative">
+              <Hint text="Min 25 / Max 80" className="-top-6 left-2" />
+              <textarea
+                value={formData.tagline}
+                maxLength={80}
+                onChange={e => handleInputChange(e, "tagline")}
+                rows={2}
+                className="w-full bg-blue-50 border resize-none border-blue-200 rounded-md shadow-inner p-2 text-blue-700 text-4xl font-semibold tracking-tight sm:text-5xl"
+              />
+            </div>
           </div>
         </div>
-
-        <select
-          value={selected.value}
-          onChange={e => {
-            const selectedOption = location.find(
-              o => o.value === e.target.value
-            )
-            if (selectedOption) setSelected(selectedOption)
-          }}
-          className="w-80 p-3 border bg-white border-gray-300 rounded-md shadow-sm text-gray-800 font-semibold"
-        >
-          {location.map(o => (
-            <option key={o.id} value={o.value}>
-              {o.name} ({o.count})
-            </option>
-          ))}
-        </select>
-
+        <div>
+          <select
+            value={selected.value}
+            onChange={e => {
+              const selectedOption = location.find(
+                o => o.value === e.target.value
+              )
+              if (selectedOption) setSelected(selectedOption)
+            }}
+            className="w-80 p-3 border bg-white border-gray-300 rounded-md shadow-sm text-gray-800 font-semibold"
+          >
+            {location.map(o => (
+              <option key={o.id} value={o.value}>
+                {o.name} ({o.count})
+              </option>
+            ))}
+          </select>
+        </div>
         <ul className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-12 mt-12">
           {filteredTours.map((tour, i) => (
             <TourGridCard
@@ -319,6 +361,7 @@ const TourGridAdminEditor = () => {
           ))}
         </ul>
       </motion.div>
+
       {uploadMessage && (
         <div className="w-full flex pt-8">
           <div

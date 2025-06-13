@@ -79,7 +79,7 @@ const ContactUs = ({ setSelectedPage }: Props) => {
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
             <div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden lg:w-1/2"></div>
             <div className="flex flex-col gap-2">
-              <h3 className="font-semibold tracking-tight text-teal-550">
+              <h3 className="font-semibold tracking-tight text-teal-500">
                 {content.sceneTitle}
               </h3>
               <h2 className="text-4xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-5xl">

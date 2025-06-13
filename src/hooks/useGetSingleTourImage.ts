@@ -1,36 +1,59 @@
 import { useEffect, useState } from "react"
 
-const BASE_URL = "https://d175n77hxdp6z.cloudfront.net/tour-gallery-photos"
-const PLACEHOLDER = `${BASE_URL}/placeholder.png`
-const EXTENSIONS = ["jpg", "jpeg", "png", "webp"]
+const BASE_DOMAIN = "https://d175n77hxdp6z.cloudfront.net"
+const FOLDER = "tour-gallery-photos" // always this folder
+const PLACEHOLDER = `${BASE_DOMAIN}/${FOLDER}/placeholder.png`
+const FALLBACK_EXT = ["jpeg", "png", "webp"] // we try .jpg first
 
-const useGetSingleTourImage = (imageName: string) => {
-  const [image, setImage] = useState<string>(PLACEHOLDER)
+export default function useGetSingleTourImage(imageName: string) {
+  const [url, setUrl] = useState<string>(PLACEHOLDER)
 
   useEffect(() => {
-    const fetchImage = async () => {
-      const cacheBuster = `?v=${Date.now()}`
+    if (!imageName) return
+    let active = true // guard against unmount
 
-      for (const ext of EXTENSIONS) {
-        const url = `${BASE_URL}/${imageName}.${ext}${cacheBuster}`
+    // ── 1. optimistic first paint (.jpg) ──────────────────────────────
+    const jpgUrl = `${BASE_DOMAIN}/${FOLDER}/${imageName}.jpg`
+    setUrl(jpgUrl)
+
+    // ── 2. validate in background using HEAD ─────────────────────────
+    ;(async () => {
+      try {
+        const head = await fetch(jpgUrl, {
+          method: "HEAD",
+          cache: "force-cache", // no cache-buster
+        })
+        if (head.ok || !active) return // .jpg exists → done
+      } catch {
+        /* fall through */
+      }
+
+      // ── 3. walk fallback extensions ────────────────────────────────
+      for (const ext of FALLBACK_EXT) {
+        if (!active) return
+        const candidate = `${BASE_DOMAIN}/${FOLDER}/${imageName}.${ext}`
         try {
-          const res = await fetch(url, { method: "GET" })
-          if (res.ok) {
-            setImage(url)
+          const r = await fetch(candidate, {
+            method: "HEAD",
+            cache: "force-cache",
+          })
+          if (r.ok) {
+            setUrl(candidate) // found → update
             return
           }
-        } catch (_) {
-          // continue to next extension
+        } catch {
+          /* ignore & try next */
         }
       }
 
-      setImage(PLACEHOLDER)
-    }
+      // ── 4. nothing found → placeholder ─────────────────────────────
+      active && setUrl(PLACEHOLDER)
+    })()
 
-    if (imageName) fetchImage()
+    return () => {
+      active = false
+    }
   }, [imageName])
 
-  return image
+  return url
 }
-
-export default useGetSingleTourImage

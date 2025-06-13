@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { useForm, Controller } from "react-hook-form"
 import { useState } from "react"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 
 import {
   BuildingOffice2Icon,

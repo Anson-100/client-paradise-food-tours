@@ -1,8 +1,9 @@
 import { StarIcon } from "@heroicons/react/20/solid"
-import useGetTourPhotos from "@/hooks/useGetTourPhotos"
+import useGetTourPhotos from "@/hooks/CMSuseGetTourPhotos"
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 import { useState, useEffect } from "react"
-import useGetSingleTourImage from "@/hooks/useGetSingleTourImage"
+import useGetSingleTourImage from "@/hooks/CMSuseGetSingleTourImage"
+import Hint from "./Hint"
 
 type Props = {
   tour: {
@@ -11,6 +12,7 @@ type Props = {
     title: string
     heroText: string
     about: string[]
+    aboutText?: { col1: string; col2: string } // Removed photo
     included: { value: string; name: string }[]
     testimonial: {
       quote: string
@@ -21,17 +23,31 @@ type Props = {
     ctaLine: string
     galleryImages: string[]
     bannerImage: string
+    aboutPhoto?: string // <-- Add this line
     details: { name: string; value: string }[] // ✅ add this
   }
 }
 
 const TourAdminEditor = ({ tour }: Props) => {
+  const aboutKey = `${tour.slug}-aboutPhoto`
+
   const galleryImages = useGetTourPhotos(tour.galleryImages)
   const bannerImage = useGetSingleTourImage(tour.bannerImage)
   const avatarImage = useGetSingleTourImage(tour.testimonial.avatar)
+  const aboutPhoto = useGetSingleTourImage(aboutKey)
 
   const { compressImage } = useCompressImageUpload()
-  const [formData, setFormData] = useState(tour)
+  const [formData, setFormData] = useState({
+    ...tour,
+    aboutText:
+      typeof tour.aboutText === "object" && tour.aboutText !== null
+        ? tour.aboutText // already proper shape
+        : {
+            // was a string or undefined
+            col1: typeof tour.aboutText === "string" ? tour.aboutText : "",
+            col2: "",
+          },
+  })
 
   // const [stagedImages, setStagedImages] = useState<(File | null)[]>(() =>
   //   Array(tour.galleryImages.length).fill(null)
@@ -46,6 +62,9 @@ const TourAdminEditor = ({ tour }: Props) => {
     })
     initial["banner"] = null
     initial["avatar"] = null
+
+    initial["aboutPhoto"] = null
+
     return initial
   })
 
@@ -86,24 +105,95 @@ const TourAdminEditor = ({ tour }: Props) => {
   }
 
   const handleSaveChanges = async () => {
+    /* ───────────── 1. TEXT GUARD-RAILS ───────────── */
+    const titleLen = formData.title.trim().length
+    const heroLen = formData.heroText.trim().length
+    const ctaLen = formData.ctaLine.trim().length
+    const quoteLen = formData.testimonial.quote.trim().length
+
+    if (titleLen < 20 || titleLen > 60) {
+      setUploadMessage({
+        type: "error",
+        text: "Title must be between 20 – 60 characters.",
+      })
+      return
+    }
+
+    if (heroLen < 60 || heroLen > 160) {
+      setUploadMessage({
+        type: "error",
+        text: "Hero text must be between 60 – 160 characters.",
+      })
+      return
+    }
+
+    for (let i = 0; i < formData.about.length; i++) {
+      const pLen = formData.about[i].trim().length
+      if (pLen < 120 || pLen > 200) {
+        setUploadMessage({
+          type: "error",
+          text: `“What to expect” paragraph ${i + 1} must be 120 – 200 characters.`,
+        })
+        return
+      }
+    }
+
+    if (
+      formData.aboutText.col1.trim().length < 250 ||
+      formData.aboutText.col1.trim().length > 520
+    ) {
+      setUploadMessage({
+        type: "error",
+        text: "About text (left column) must be 250 – 520 characters.",
+      })
+      return
+    }
+
+    if (
+      formData.aboutText.col2.trim().length < 250 ||
+      formData.aboutText.col2.trim().length > 520
+    ) {
+      setUploadMessage({
+        type: "error",
+        text: "About text (right column) must be 250 – 520 characters.",
+      })
+      return
+    }
+
+    if (quoteLen < 60 || quoteLen > 180) {
+      setUploadMessage({
+        type: "error",
+        text: "Testimonial quote must be 60 – 180 characters.",
+      })
+      return
+    }
+
+    if (ctaLen < 30 || ctaLen > 80) {
+      setUploadMessage({
+        type: "error",
+        text: "CTA line must be 30 – 80 characters.",
+      })
+      return
+    }
+
+    /* ───────────── 2. ORIGINAL UPLOAD / SAVE FLOW ───────────── */
     setIsUploading(true)
     setUploadMessage(null)
 
     try {
+      /* ---------- image uploads ---------- */
       for (const [key, file] of Object.entries(stagedImages)) {
         if (!file) continue
 
         const base64 = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader()
-          reader.onloadend = () => {
-            if (!reader.result) return reject("No file result")
+          reader.onloadend = () =>
             resolve((reader.result as string).split(",")[1])
-          }
           reader.onerror = reject
           reader.readAsDataURL(file)
         })
 
-        const res = await fetch(
+        const imgRes = await fetch(
           "https://pq6sx039ia.execute-api.us-east-2.amazonaws.com/dev/tour-images",
           {
             method: "POST",
@@ -117,15 +207,14 @@ const TourAdminEditor = ({ tour }: Props) => {
           }
         )
 
-        if (!res.ok) {
-          const errText = await res.text()
+        if (!imgRes.ok) {
+          const errText = await imgRes.text()
           throw new Error(`Upload failed for image ${key}: ${errText}`)
         }
-
-        console.log(`✅ Uploaded ${file.name} to slot ${key}`)
       }
 
-      const res = await fetch(
+      /* ---------- JSON save ---------- */
+      const jsonRes = await fetch(
         "https://pq6sx039ia.execute-api.us-east-2.amazonaws.com/dev/tour-json",
         {
           method: "POST",
@@ -137,12 +226,11 @@ const TourAdminEditor = ({ tour }: Props) => {
         }
       )
 
-      if (!res.ok) {
-        const errText = await res.text()
+      if (!jsonRes.ok) {
+        const errText = await jsonRes.text()
         throw new Error(`Text update failed: ${errText}`)
       }
 
-      console.log("✅ Tour JSON updated")
       setUploadMessage({ type: "success", text: "All uploads complete!" })
     } catch (err) {
       console.error("❌ Upload error:", err)
@@ -189,6 +277,13 @@ const TourAdminEditor = ({ tour }: Props) => {
         }
         return { ...prev, included: updatedArray }
       }
+      if (field === "aboutText" && subField) {
+        return {
+          ...prev,
+          aboutText: { ...prev.aboutText, [subField]: e.target.value },
+        }
+      }
+
       if (field === "testimonial" && subField) {
         return {
           ...prev,
@@ -204,18 +299,33 @@ const TourAdminEditor = ({ tour }: Props) => {
       <div className="mx-auto max-w-2xl lg:max-w-7xl pt-24 sm:pt-32">
         {/* HEADER */}
         <div className="max-w-4xl px-6 lg:px-8 space-y-6">
-          <div className="font-bold  text-base w-full">{formData.name}</div>
+          <div className="font-bold text-base w-full">{formData.name}</div>
 
-          <textarea
-            value={formData.title}
-            onChange={e => handleInputChange(e, "title")}
-            className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-4xl font-semibold tracking-tight text-pretty sm:text-5xl"
-          />
-          <textarea
-            value={formData.heroText}
-            onChange={e => handleInputChange(e, "heroText")}
-            className="h-auto p-2 bg-blue-50 border text-xl border-blue-200 rounded-md shadow-inner text-blue-700 font-medium w-full"
-          />
+          {/* Title */}
+          <div className="relative group">
+            <textarea
+              value={formData.title}
+              onChange={e => handleInputChange(e, "title")}
+              maxLength={60}
+              className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-4xl font-semibold tracking-tight text-pretty sm:text-5xl resize-none"
+            />
+            <Hint text="Main title · max 60 chars" className="-top-5 left-2" />
+          </div>
+
+          {/* Hero text */}
+          <div className="relative group">
+            <textarea
+              value={formData.heroText}
+              onChange={e => handleInputChange(e, "heroText")}
+              maxLength={160}
+              className="h-auto p-2 bg-blue-50 border text-xl border-blue-200 rounded-md shadow-inner text-blue-700 font-medium w-full resize-none"
+            />
+            <Hint
+              text="Hero sub-text · max 160 chars"
+              className="-top-5 left-2"
+            />
+          </div>
+
           <div className="pt-4">
             <div className="h-auto p-2 w-64 bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
               Check Dates Button
@@ -227,18 +337,25 @@ const TourAdminEditor = ({ tour }: Props) => {
         <section className="my-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-16 px-6 lg:px-8">
           <div className="lg:pr-8">
             <h2 className="text-2xl font-semibold tracking-tight text-pretty ">
-              About the tour
+              What to expect
             </h2>
             {formData.about.map((text, i) => (
-              <textarea
+              <div
                 key={i}
-                value={text}
-                onChange={e => handleInputChange(e, "about", i)}
-                rows={4} // ← or 5 if you want even taller
-                className={`${
-                  i === 1 ? "mt-6" : "mt-8"
-                } p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium px-4 w-full`}
-              />
+                className={`relative group ${i === 1 ? "mt-6" : "mt-8"}`}
+              >
+                <textarea
+                  value={text}
+                  onChange={e => handleInputChange(e, "about", i)}
+                  maxLength={200}
+                  rows={4}
+                  className="p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium px-4 w-full resize-none"
+                />
+                <Hint
+                  text={`Paragraph ${i + 1} · max 200 chars`}
+                  className="-top-5 left-4"
+                />
+              </div>
             ))}
           </div>
 
@@ -264,7 +381,14 @@ const TourAdminEditor = ({ tour }: Props) => {
                     loading="lazy"
                     decoding="async"
                   />
+
                   <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
+                    <Hint
+                      text="Aspect ratio · 1 / 1"
+                      className="top-2 left-2"
+                      always
+                    />
+
                     <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                       Upload
                       <input
@@ -282,7 +406,7 @@ const TourAdminEditor = ({ tour }: Props) => {
 
           <div className="max-lg:mt-16 lg:col-span-1">
             <p className="text-base/7 font-semibold text-gray-500">
-              Tour Details
+              Tour details
             </p>
             <hr className="mt-6 border-t border-gray-200" />
             <dl className="mt-6 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
@@ -295,21 +419,115 @@ const TourAdminEditor = ({ tour }: Props) => {
                       : ""
                   }`}
                 >
-                  <input
-                    type="text"
-                    value={item.name}
-                    onChange={e => handleInputChange(e, "details", i, "name")}
-                    className="tracking-tight bg-blue-50 h-auto p-2 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium w-full "
-                  />
-                  <input
-                    type="text"
-                    value={item.value}
-                    onChange={e => handleInputChange(e, "details", i, "value")}
-                    className="order-first  bg-blue-50 h-auto p-2 border border-blue-200 rounded-md shadow-inner text-blue-700  w-full  text-6xl font-semibold tracking-tight"
-                  />
+                  {/* Label */}
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={item.name}
+                      onChange={e => handleInputChange(e, "details", i, "name")}
+                      maxLength={15}
+                      className="tracking-tight bg-blue-50 h-auto p-2 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium w-full"
+                    />
+                    <Hint
+                      text="Label · max 15 chars"
+                      className="-top-5 left-2"
+                    />
+                  </div>
+
+                  {/* Value */}
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={item.value}
+                      onChange={e =>
+                        handleInputChange(e, "details", i, "value")
+                      }
+                      maxLength={8}
+                      className="bg-blue-50 h-auto p-2 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-6xl font-semibold tracking-tight"
+                    />
+                    <Hint text="Value · max 8" className="-top-5 left-2" />
+                  </div>
                 </div>
               ))}
             </dl>
+          </div>
+        </section>
+        {/* ---------- NEW: About-Text editor ---------- */}
+        <section className="mx-6 lg:mx-8 mt-20 space-y-8">
+          <h2 className="text-2xl font-semibold text-pretty">
+            About Text (NEW)
+          </h2>
+
+          {/* two-column grid so it mirrors front-end layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Column 1 */}
+            <div className="relative group">
+              <textarea
+                value={formData.aboutText.col1}
+                onChange={e =>
+                  handleInputChange(e, "aboutText", undefined, "col1")
+                }
+                maxLength={520}
+                rows={10}
+                placeholder="2 short paragraphs • stay inside the box"
+                className="w-full p-3 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium resize-none"
+              />
+              <Hint
+                text="Left column · max 520 chars"
+                className="-top-5 left-2"
+              />
+            </div>
+
+            {/* Column 2 */}
+            <div className="relative group">
+              <textarea
+                value={formData.aboutText.col2}
+                onChange={e =>
+                  handleInputChange(e, "aboutText", undefined, "col2")
+                }
+                maxLength={520}
+                rows={10}
+                placeholder="2 short paragraphs • stay inside the box"
+                className="w-full p-3 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium resize-none"
+              />
+              <Hint
+                text="Right column · max 520 chars"
+                className="-top-5 left-2"
+              />
+            </div>
+          </div>
+
+          {/* optional photo */}
+          <div className="xl:mx-auto xl:max-w-7xl xl:px-8 mt-24">
+            <div className="relative aspect-[5/2] w-full overflow-hidden rounded-3xl">
+              <img
+                alt=""
+                src={
+                  stagedImages["aboutPhoto"]
+                    ? URL.createObjectURL(stagedImages["aboutPhoto"])
+                    : aboutPhoto
+                }
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <Hint
+                  text="Aspect ratio · 2/3"
+                  text2="5w → 2h ↑"
+                  className="top-2"
+                  always
+                />
+
+                <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
+                  Upload About Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => handleFileUpload(e, "aboutPhoto")}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -329,24 +547,38 @@ const TourAdminEditor = ({ tour }: Props) => {
                 {formData.included.map((item, i) => (
                   <div
                     key={i}
-                    className="flex flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl shadow-inner p-6 space-y-2 font-semibold"
+                    className="flex flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl shadow-inner p-6 space-y-4 font-semibold"
                   >
-                    <input
-                      type="text"
-                      value={item.value}
-                      onChange={e =>
-                        handleInputChange(e, "included", i, "value")
-                      }
-                      className="w-full text-3xl p-2 bg-white border border-blue-100 rounded-md text-center text-blue-700 "
-                    />
-                    <input
-                      type="text"
-                      value={item.name}
-                      onChange={e =>
-                        handleInputChange(e, "included", i, "name")
-                      }
-                      className="h-auto w-full p-2 bg-white border border-blue-100 rounded-md text-center text-blue-600 "
-                    />
+                    {/* Top (value) */}
+                    <div className="relative group w-full">
+                      <input
+                        type="text"
+                        value={item.value}
+                        onChange={e =>
+                          handleInputChange(e, "included", i, "value")
+                        }
+                        maxLength={12}
+                        className="w-full text-3xl p-2 bg-white border border-blue-100 rounded-md text-center text-blue-700"
+                      />
+                      <Hint text="Title · max 12 " className="-top-5 left-2" />
+                    </div>
+
+                    {/* Bottom (name) */}
+                    <div className="relative group w-full">
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={e =>
+                          handleInputChange(e, "included", i, "name")
+                        }
+                        maxLength={26}
+                        className="h-auto w-full p-2 bg-white border border-blue-100 rounded-md text-center text-blue-600"
+                      />
+                      <Hint
+                        text="Sub-text · max 26 "
+                        className="-top-5 left-2"
+                      />
+                    </div>
                   </div>
                 ))}
               </dl>
@@ -374,6 +606,12 @@ const TourAdminEditor = ({ tour }: Props) => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
+              <Hint
+                text="Aspect ratio · 2/3"
+                text2="5w → 2h ↑"
+                className="top-2"
+                always
+              />
               <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                 Upload Banner
                 <input
@@ -395,13 +633,22 @@ const TourAdminEditor = ({ tour }: Props) => {
                 <StarIcon key={i} className="size-5" />
               ))}
             </div>
-            <textarea
-              value={formData.testimonial.quote}
-              onChange={e =>
-                handleInputChange(e, "testimonial", undefined, "quote")
-              }
-              className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 text-base font-medium px-4 w-full"
-            />
+            {/* Quote */}
+            <div className="relative group">
+              <textarea
+                value={formData.testimonial.quote}
+                onChange={e =>
+                  handleInputChange(e, "testimonial", undefined, "quote")
+                }
+                maxLength={180}
+                rows={3}
+                className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 text-base font-medium px-4 w-full resize-none"
+              />
+              <Hint
+                text="Testimonial · max 180 chars"
+                className="-top-5 left-2"
+              />
+            </div>
             <figcaption className="flex items-center gap-x-6">
               {/* <div className="size-12 rounded-full bg-white border border-gray-300 shadow-sm flex items-center justify-center text-gray-400">
               <img
@@ -428,23 +675,34 @@ const TourAdminEditor = ({ tour }: Props) => {
                 />
               </div>
 
-              <div className="space-y-1 flex flex-col">
-                <input
-                  type="text"
-                  value={formData.testimonial.name}
-                  onChange={e =>
-                    handleInputChange(e, "testimonial", undefined, "name")
-                  }
-                  className="h-auto p-2 w-40 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium"
-                />
-                <input
-                  type="text"
-                  value={formData.testimonial.role}
-                  onChange={e =>
-                    handleInputChange(e, "testimonial", undefined, "role")
-                  }
-                  className="h-auto p-2 w-32 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-600 font-medium"
-                />
+              <div className="space-y-1 flex flex-col gap-4">
+                {/* Name */}
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={formData.testimonial.name}
+                    onChange={e =>
+                      handleInputChange(e, "testimonial", undefined, "name")
+                    }
+                    maxLength={25}
+                    className="h-auto p-2 w-40 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium"
+                  />
+                  <Hint text="Name · max 25 " className="-top-5 left-2" />
+                </div>
+
+                {/* Role */}
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={formData.testimonial.role}
+                    onChange={e =>
+                      handleInputChange(e, "testimonial", undefined, "role")
+                    }
+                    maxLength={25}
+                    className="h-auto p-2 w-32 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-600 font-medium"
+                  />
+                  <Hint text="Role · max 25" className="-top-5 left-2" />
+                </div>
               </div>
             </figcaption>
           </figure>
@@ -455,11 +713,19 @@ const TourAdminEditor = ({ tour }: Props) => {
           <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
             <div className="max-w-2xl space-y-4 text-4xl sm:text-5xl font-semibold">
               <p className="">Hungry for more?</p>
-              <textarea
-                value={formData.ctaLine}
-                onChange={e => handleInputChange(e, "ctaLine")}
-                className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner flex items-center justify-center text-blue-700  w-full"
-              />
+              <div className="relative group">
+                <textarea
+                  value={formData.ctaLine}
+                  onChange={e => handleInputChange(e, "ctaLine")}
+                  maxLength={80}
+                  rows={2}
+                  className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner flex items-center justify-center text-blue-700 w-full resize-none"
+                />
+                <Hint
+                  text="CTA line · max 80 chars"
+                  className="-top-5 left-2"
+                />
+              </div>
             </div>
             <div className="mt-10 lg:mt-0">
               <div className="h-auto p-2 bg-gray-100 border border-gray-300 rounded-md text-gray-400">

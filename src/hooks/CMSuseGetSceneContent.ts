@@ -13,11 +13,8 @@ const useGetSceneContent = (filename: string) => {
     const fetchContent = async () => {
       try {
         setIsLoading(true)
-
-        // no cache-buster ⇒ CloudFront edge cache now works
-        const res = await fetch(`${BASE_URL}/${filename}.json`)
+        const res = await fetch(`${BASE_URL}/${filename}.json?v=${Date.now()}`)
         if (!res.ok) throw new Error("Failed to fetch content")
-
         const data = await res.json()
         setContent(data)
         setError(null)

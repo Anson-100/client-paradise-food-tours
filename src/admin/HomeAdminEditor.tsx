@@ -1,7 +1,8 @@
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
-import useGetCloudImage from "@/hooks/useGetCloudImage"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
+import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
+import Hint from "./Hint"
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 
 const HomeAdminEditor = () => {
@@ -92,6 +93,26 @@ const HomeAdminEditor = () => {
   }
 
   const handleSaveChanges = async () => {
+    // Perform manual min/max validation
+    const titleLength = formData.title.trim().length
+    const subtitleLength = formData.subtitle.trim().length
+
+    if (titleLength < 30 || titleLength > 40) {
+      setUploadMessage({
+        type: "error",
+        text: "Title must be between 30 and 40 characters.",
+      })
+      return
+    }
+
+    if (subtitleLength < 150 || subtitleLength > 180) {
+      setUploadMessage({
+        type: "error",
+        text: "Subtext must be between 150 and 180 characters.",
+      })
+      return
+    }
+
     setIsUploading(true)
     setUploadMessage(null)
 
@@ -153,32 +174,43 @@ const HomeAdminEditor = () => {
             <div className="mx-auto max-w-7xl px-6 pt-36 pb-32 sm:pt-60 lg:px-8 lg:pt-28">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl">
-                  <textarea
-                    value={formData.title}
-                    onChange={e => handleInputChange(e, "title")}
-                    className="resize-none h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-5xl sm:text-7xl font-semibold tracking-tight text-pretty mt-2 leading-tight"
-                    rows={2}
-                  />
+                  {/* ───────────── Title ───────────── */}
+                  <div className="relative">
+                    <Hint text="Min 30  /  Max 40" />
+                    <textarea
+                      value={formData.title}
+                      onChange={e => handleInputChange(e, "title")}
+                      rows={2}
+                      maxLength={40}
+                      className="mt-4 resize-none h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-5xl sm:text-7xl font-semibold tracking-tight text-pretty leading-tight"
+                    />
+                  </div>
 
-                  <textarea
-                    value={formData.subtitle}
-                    onChange={e => handleInputChange(e, "subtitle")}
-                    rows={3}
-                    className="h-auto p-2 mt-8 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-lg font-medium sm:max-w-md sm:text-xl/8 lg:max-w-none text-pretty"
-                  />
+                  {/* ──────────── Subtitle ─────────── */}
+                  <div className="relative mt-6">
+                    <Hint text="Min 150  /  Max 180" />
+                    <textarea
+                      value={formData.subtitle}
+                      onChange={e => handleInputChange(e, "subtitle")}
+                      rows={3}
+                      maxLength={180}
+                      className="mt-4 resize-none h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-lg font-medium sm:max-w-md sm:text-xl/8 lg:max-w-none text-pretty"
+                    />
+                  </div>
 
+                  {/* ───────────── Buttons ──────────── */}
                   <div className="mt-10 flex items-center gap-x-2">
-                    <div className="h-auto p-2  bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
+                    <div className="h-auto p-2 bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
                       Check Dates Button
                     </div>
-                    <div className="h-auto p-2  bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
+                    <div className="h-auto p-2 bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
                       Learn More Button
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-2 lg:pl-0">
-                  <div className="ml-auto w-50 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
+                  <div className="relative ml-auto w-50 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
                     <div
                       className={`relative transition-all duration-200 ${
                         dragOverKey === "image-0"
@@ -195,6 +227,8 @@ const HomeAdminEditor = () => {
                         setDragOverKey(null)
                       }}
                     >
+                      <Hint text="Desktop image" />
+
                       <img
                         alt=""
                         src={
@@ -218,7 +252,9 @@ const HomeAdminEditor = () => {
                     </div>
                   </div>
 
-                  <div className="mr-auto w-50 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
+                  <div className="mr-auto w-50 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36 relative">
+                    <Hint text="Aspect ratio: 2/3" text2="2w → 3h ↑" />
+
                     {["image-1", "image-2"].map((key, i) => (
                       <div
                         key={key}

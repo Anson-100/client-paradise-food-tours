@@ -9,7 +9,7 @@ import ContactAdminEditor from "./ContactAdminEditor"
 import FaqAdminEditor from "./FaqAdminEditor"
 import TourAdminEditor from "./TourAdminEditor"
 import useAuth from "@/auth/useAuth"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 import LogoIcon from "@/assets/logoMainIcon.png"
 import {
   Disclosure,
@@ -24,7 +24,7 @@ import {
   AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/solid"
 import Greeting from "./Greeting"
-import useGetTourContent from "@/hooks/useGetTourContent"
+import useGetTourContent from "@/hooks/CMSuseGetTourContent"
 
 import { useNavigate, Navigate } from "react-router-dom"
 
@@ -134,12 +134,21 @@ const AdminDashboard = () => {
             </DisclosureButton>
             <div className="hidden absolute inset-y-0 right-0 sm:flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <a
-                href=""
+                href="https://paradisefoodtours.activehosted.com/app/overview"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex gap-1 items-center  justify-center  px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold  focus:outline-none focus:ring-2  focus:ring-offset-2"
               >
                 Active Campaign
+                <ArrowUpRightIcon className="w-3" />
+              </a>{" "}
+              <a
+                href="https://auth.peek.com/u/login/identifier?state=hKFo2SBuTWs5bjRwSkVDWGZ4THRwRUFOYk5UNm5TYmJOUmtjb6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIFpyWWY4cUNjZGZXTS1wbUZTY0N0OE9Ib3ZhQ25qOTlqo2NpZNkgV1R0SG41UzFIQ3FOS0xqS1NmUFhVelNiUU1HOGVXTnM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex gap-1 items-center  justify-center  px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold  focus:outline-none focus:ring-2  focus:ring-offset-2"
+              >
+                Peek Pro
                 <ArrowUpRightIcon className="w-3" />
               </a>{" "}
               <a
@@ -223,23 +232,54 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="mt-6 space-y-6">
-            <p className="flex items-start gap-2">
-              <InformationCircleIcon className="mt-0.5 h-5 w-5 text-teal-500 shrink-0" />
-              For best results, organize your text content to fit inside the
-              boxes provided; too little and especially too much will distort
-              the layout.
-            </p>{" "}
-            <p className="flex items-start gap-2">
-              <InformationCircleIcon className="mt-0.5 h-5 w-5 text-teal-500 shrink-0" />
-              It is best to edit text content on a desktop computer; as long as
-              text content fits inside the boxes provided on desktop, it will
-              not break on mobile.
-            </p>
-            <p className="flex items-start gap-2">
-              <InformationCircleIcon className="mt-0.5 h-5 w-5 text-teal-500 shrink-0" />
-              Don’t forget to click "Save Changes" before switching to another
-              section or leaving the admin dashboard.
-            </p>
+            {/* 1 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-700">
+                This CMS mirrors the live site layout to give you a{" "}
+                <span className="font-semibold">true visual preview</span>. Each
+                text box has{" "}
+                <span className="font-semibold">
+                  minimum and maximum character limits
+                </span>{" "}
+                to maintain proper formatting.
+              </p>
+            </div>
+
+            {/* 2 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-700">
+                Always{" "}
+                <span className="font-semibold">
+                  keep text fully inside the provided boxes
+                </span>{" "}
+                when editing. As long as text fits cleanly on desktop, it will
+                format correctly across devices.
+              </p>
+            </div>
+
+            {/* 3 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-700">
+                To preview mobile appearance:{" "}
+                <span className="font-semibold">Right&nbsp;click</span> →{" "}
+                <span className="font-semibold">Inspect</span> → click the{" "}
+                <span className="font-semibold">Toggle Device Toolbar</span>{" "}
+                icon (top-left of dev tools) and choose a mobile size.
+              </p>
+            </div>
+
+            {/* 4 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-700">
+                Always{" "}
+                <span className="font-semibold">click “Save Changes”</span>{" "}
+                before switching sections or leaving the dashboard.
+              </p>
+            </div>
           </div>
         </div>
         {selectedSection === "home" && (
@@ -317,7 +357,7 @@ const AdminDashboard = () => {
           </div>
         )}
       </motion.div>{" "}
-      <div className="mt-24 flex justify-center">
+      <div className="flex justify-center">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="hover:cursor-pointer w-full px-6 py-2  border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-100 font-semibold"

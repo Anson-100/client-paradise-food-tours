@@ -8,9 +8,20 @@ export type TourContent = {
   heroText: string
   ctaLine: string
   about: string[]
-  details: { name: string; value: string }[]
-  included: { value: string; name: string }[]
-  testimonial: { quote: string; name: string; role: string; avatar: string }
+  details: {
+    name: string
+    value: string
+  }[]
+  included: {
+    value: string
+    name: string
+  }[]
+  testimonial: {
+    quote: string
+    name: string
+    role: string
+    avatar: string
+  }
   duration: string
   stops: number
   guests: string
@@ -40,20 +51,21 @@ const useGetTourContent = (providedSlug?: string) => {
     const loadContent = async () => {
       setIsLoading(true)
       try {
-        const url = `https://d175n77hxdp6z.cloudfront.net/tour-json-file/${slug}.json`
-        const res = await fetch(url, { cache: "force-cache" })
+        const url = `https://d175n77hxdp6z.cloudfront.net/tour-json-file/${slug}.json?v=${Date.now()}`
+        const res = await fetch(url)
         if (!res.ok) throw new Error("Failed to load tour content")
-
         const json: TourContent = await res.json()
 
-        setTour({
+        const merged = {
           ...json,
-          testimonial: { ...json.testimonial },
-        })
-        setError(null)
+          testimonial: {
+            ...json.testimonial,
+          },
+        }
+
+        setTour(merged)
       } catch (err: any) {
         setError(err.message || "Unknown error")
-        setTour(null)
       } finally {
         setIsLoading(false)
       }

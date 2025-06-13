@@ -18,8 +18,8 @@ const LinkDesktop = ({
     <AnchorLink
       className={`mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold ${
         selectedPage === scrollTo
-          ? "border-b-[2px] border-neutral-300 text-neutral-800"
-          : "text-zinc-800 border-transparent hover:border-neutral-300"
+          ? "border-b-[2px] border-teal-500 text-zinc-700"
+          : "text-zinc-700 border-transparent hover:border-teal-500"
       }`}
       href={`#${scrollTo}`} // Now scrolling is based on `scrollTo`
       onClick={() => setSelectedPage(scrollTo)}

@@ -1,6 +1,6 @@
 import { StarIcon } from "@heroicons/react/24/solid"
 import React from "react"
-import useGetCloudImage from "@/hooks/useGetCloudImage"
+import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
 
 type Testimonial = {
   body: string

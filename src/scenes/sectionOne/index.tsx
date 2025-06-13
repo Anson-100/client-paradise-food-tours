@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 import { useState, useMemo, useEffect } from "react"
 import { ArrowTrendingUpIcon } from "@heroicons/react/24/solid"
 import SceneHeader from "@/shared/SceneHeader"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 
 import CustomDropdown from "./customDropdown"
 import TourCard from "./tourCard"
@@ -120,7 +120,7 @@ const SectionOne = ({ setSelectedPage }: Props) => {
           {filteredTours.map(tour => (
             <li key={tour.link} className="relative">
               {tour.isWalking && (
-                <span className="absolute top-2 right-2 bg-coral-500 rounded-tr-xl text-white text-sm uppercase px-2 items-center py-1 rounded flex gap-1">
+                <span className="absolute top-2 right-2 bg-coral-500/70 rounded-tr-xl text-white text-sm uppercase px-2 items-center py-1 rounded flex gap-1 text-zinc-50 font-semibold">
                   <ArrowTrendingUpIcon className="h-4" /> walking tour
                 </span>
               )}

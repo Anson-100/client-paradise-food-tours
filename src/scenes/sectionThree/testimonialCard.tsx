@@ -1,8 +1,8 @@
 // src/components/TestimonialCard.tsx
 import { StarIcon } from "@heroicons/react/24/solid"
 import React from "react"
-// Import the hook you use for getting cloud images
-import useGetCloudImage from "@/hooks/useGetCloudImage" // Adjust path if needed
+
+// import useGetCloudImage from "@/hooks/useGetCloudImage"
 
 type Testimonial = {
   body: string
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const TestimonialCard: React.FC<Props> = ({ testimonial }) => {
-  const avatarImageUrl = useGetCloudImage(testimonial.author.avatar)
+  // const avatarImageUrl = useGetCloudImage(testimonial.author.avatar)
 
   return (
     // This div structure matches the outer div for each testimonial in your SectionThree map
@@ -37,11 +37,11 @@ const TestimonialCard: React.FC<Props> = ({ testimonial }) => {
         </blockquote>{" "}
         <figcaption className="mt-4 flex items-center gap-x-4">
           {/* Use the image URL obtained from the hook */}
-          <img
-            alt={`Avatar of ${testimonial.author.name}`} // Descriptive alt text is good for accessibility
-            src={avatarImageUrl} // Use the URL from the hook call
-            className="size-10 rounded-full bg-gray-50 object-cover" // Added object-cover for better image fitting
-          />
+          {/* <img
+            alt={`Avatar of ${testimonial.author.name}`}
+            src={avatarImageUrl}
+            className="size-10 rounded-full bg-gray-50 object-cover"
+          /> */}
           <div className="flex flex-col">
             {/* Display the author's name */}
 
