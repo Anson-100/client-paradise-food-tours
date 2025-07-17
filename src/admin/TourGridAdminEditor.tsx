@@ -315,8 +315,8 @@ const TourGridAdminEditor = () => {
             </div>
 
             {/* Tagline */}
-            <div className="relative">
-              <Hint text="Min 25 / Max 80" className="-top-6 left-2" />
+            <div className="relative group">
+              <Hint text="Tagline · max 80" className="-top-6 left-2" />
               <textarea
                 value={formData.tagline}
                 maxLength={80}

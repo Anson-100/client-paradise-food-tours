@@ -47,7 +47,7 @@ function CustomDropdown({ options, selected, onSelect }: CustomDropdownProps) {
   return (
     <div className="relative mt-3 w-80" ref={dropdownRef}>
       <button
-        className="grid w-full cursor-default grid-cols-1 rounded-md py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 bg-zinc-50 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-teal-500 sm:text-md/6 font-semibold"
+        className="grid w-full cursor-default grid-cols-1 rounded-md px-3.5 py-2  text-left text-gray-900 outline-1 -outline-offset-1 bg-zinc-50 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-teal-500 sm:text-md/6 font-semibold"
         onClick={handleButtonClick}
       >
         <span className="col-start-1 row-start-1 truncate pr-6">

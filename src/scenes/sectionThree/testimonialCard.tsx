@@ -22,16 +22,16 @@ const TestimonialCard: React.FC<Props> = ({ testimonial }) => {
   return (
     // This div structure matches the outer div for each testimonial in your SectionThree map
     <div className="pt-8 sm:inline-block sm:w-full sm:px-4">
-      <figure className="rounded-2xl bg-gray-50 shadow-sm p-8 text-sm/6">
+      <figure className="rounded-2xl bg-gray-50 shadow-sm p-8 text-[15px]/6">
         {" "}
-        <div className="flex mb-2 gap-1">
-          <StarIcon className="h-3 text-yellow-500" />
-          <StarIcon className="h-3 text-yellow-500" />
-          <StarIcon className="h-3 text-yellow-500" />
-          <StarIcon className="h-3 text-yellow-500" />
-          <StarIcon className="h-3 text-yellow-500" />
+        <div className="flex gap-1">
+          <StarIcon className="h-4 text-yellow-500" />
+          <StarIcon className="h-4 text-yellow-500" />
+          <StarIcon className="h-4 text-yellow-500" />
+          <StarIcon className="h-4 text-yellow-500" />
+          <StarIcon className="h-4 text-yellow-500" />
         </div>{" "}
-        <blockquote className="text-gray-900">
+        <blockquote className="text-gray-900 mt-4">
           {/* Display the testimonial body */}
           <p>{`“${testimonial.body}”`}</p>
         </blockquote>{" "}

@@ -95,7 +95,7 @@ function AppContent() {
         />
 
         {/* Standalone Route for FAQ and User Login */}
-        <Route path="/routeOne" element={<RouteOne />} />
+        <Route path="/FAQ" element={<RouteOne />} />
         <Route path="/routeTwo" element={<RouteTwo />} />
 
         {/* ✅ Dynamic single route for all tours */}

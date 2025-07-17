@@ -4,6 +4,15 @@ import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 import TestimonialGridCard from "./TestimonialGridCard"
 import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
+import Hint from "./Hint" // ⬅ existing file
+
+// or paste directly:
+const TAG_MIN = 20,
+  TAG_MAX = 80
+const BODY_MIN = 120,
+  BODY_MAX = 180
+const NAME_MIN = 3,
+  NAME_MAX = 30
 
 // Types
 
@@ -111,6 +120,35 @@ const TestimonialAdminEditor = () => {
   }
 
   const handleSaveChanges = async () => {
+    // ── 1. validate limits ───────────────────────────────────────────────
+    const problems: string[] = []
+
+    // tagline
+    const tagLen = formData.tagline.trim().length
+    if (tagLen < TAG_MIN || tagLen > TAG_MAX)
+      problems.push(`Tagline (${tagLen}/${TAG_MIN}-${TAG_MAX})`)
+
+    // each testimonial
+    formData.testimonials.forEach((t, i) => {
+      const bodyLen = t.body.trim().length
+      const nameLen = t.author.name.trim().length
+
+      if (bodyLen < BODY_MIN || bodyLen > BODY_MAX)
+        problems.push(`T${i + 1} body (${bodyLen}/${BODY_MIN}-${BODY_MAX})`)
+
+      if (nameLen < NAME_MIN || nameLen > NAME_MAX)
+        problems.push(`T${i + 1} name (${nameLen}/${NAME_MIN}-${NAME_MAX})`)
+    })
+
+    if (problems.length) {
+      setUploadMessage({
+        type: "error",
+        text: `Fix: ${problems.join(", ")}`,
+      })
+      return // stop; nothing uploads while invalid
+    }
+
+    // ── 2. proceed with uploads / JSON save ──────────────────────────────
     setIsUploading(true)
     setUploadMessage(null)
 
@@ -126,19 +164,17 @@ const TestimonialAdminEditor = () => {
           reader.readAsDataURL(file)
         })
 
+        // derive index / filename
         let index: string
-
         if (key === "sectionImage") {
           index = formData.sectionImage
         } else {
           const testimonialIndex = parseInt(key.split("-").pop() || "", 10)
           index = formData.testimonials[testimonialIndex]?.author.avatar
-
-          if (!index) {
+          if (!index)
             throw new Error(
               `Missing avatar name for testimonial index: ${testimonialIndex}`
             )
-          }
         }
 
         const filename = `${index}.${file.name.split(".").pop()}`
@@ -156,7 +192,6 @@ const TestimonialAdminEditor = () => {
             }),
           }
         )
-
         if (!res.ok) throw new Error(`Upload failed for ${filename}`)
       }
 
@@ -168,7 +203,6 @@ const TestimonialAdminEditor = () => {
           body: JSON.stringify({ slug: "sectionthree", data: formData }),
         }
       )
-
       if (!res.ok) throw new Error("Failed to update JSON")
 
       setUploadMessage({ type: "success", text: "Changes saved successfully!" })
@@ -187,18 +221,28 @@ const TestimonialAdminEditor = () => {
       <motion.div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto flex flex-col gap-2 max-w-2xl text-center">
-            <input
+            {/* <input
               type="text"
               value={formData.sceneTitle}
               onChange={e => handleInputChange(e, "sceneTitle")}
               className="bg-blue-50 border border-blue-200 text-blue-700 rounded-md shadow-inner p-2 font-semibold tracking-tight text-center"
-            />
-            <textarea
-              value={formData.tagline}
-              onChange={e => handleInputChange(e, "tagline")}
-              className="bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2 text-4xl font-semibold tracking-tight text-blue-700 w-full sm:text-5xl text-center"
-              rows={2}
-            />
+            /> */}
+            <div className=" rounded-md p-2 font-semibold tracking-tight text-center">
+              {formData.sceneTitle}
+            </div>
+
+            <div className="relative group">
+              <textarea
+                value={formData.tagline}
+                onChange={e => handleInputChange(e, "tagline")}
+                className="bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2
+               text-4xl font-semibold tracking-tight text-blue-700 w-full
+               sm:text-5xl text-center resize-none"
+                rows={2}
+                maxLength={TAG_MAX}
+              />
+              <Hint text={`Tagline · ${TAG_MIN}–${TAG_MAX} chars`} />
+            </div>
           </div>
           <div className="mx-auto mt-16 flow-root max-w-2xl sm:mt-12 lg:mx-0 lg:max-w-none">
             <div className="-mt-8 sm:-mx-4 sm:columns-2 sm:text-[0] lg:columns-3">
@@ -226,12 +270,8 @@ const TestimonialAdminEditor = () => {
               <p className="text-base text-gray-400">
                 Want to see more?
                 <span className="text-gray-400 font-semibold ml-1">
-                  See more reviews on Google
+                  Check out more reviews on Google
                 </span>{" "}
-                or{" "}
-                <span className="text-gray-400 font-semibold">
-                  check us out on Yelp
-                </span>
                 .
               </p>
             </div>
@@ -269,6 +309,12 @@ const TestimonialAdminEditor = () => {
             className="aspect-5/2 w-full object-cover xl:rounded-3xl bg-zinc-100"
           />
           <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity rounded-3xl">
+            <Hint
+              text="Aspect ratio · 5/2"
+              text2="5w → 2h ↑"
+              className="top-2"
+              always
+            />
             <label className="text-sm bg-white/90 hover:bg-white p-2 m-4 rounded cursor-pointer shadow">
               Upload
               <input

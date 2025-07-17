@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import SceneHeader from "@/shared/SceneHeader"
-import useGetSceneContent from "@/hooks/useGetSceneContent"
+import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid"
 import { motion, AnimatePresence } from "framer-motion"

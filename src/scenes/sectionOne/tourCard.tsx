@@ -80,7 +80,7 @@ const TourCard: React.FC<Props> = ({ tour }) => {
             {/* === CONDITIONAL BUTTON RENDERING END === */}
             <Link to={tour.link}>
               <button className="hover:cursor-pointer flex items-center gap-1 px-3.5 py-2.5 text-md rounded-md text-zinc-800">
-                Read More <div className="text-zinc-600 text-lg">&rarr;</div>
+                Read more <div className="text-zinc-600 text-lg">&rarr;</div>
               </button>
             </Link>
           </div>

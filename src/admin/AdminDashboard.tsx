@@ -27,6 +27,9 @@ import Greeting from "./Greeting"
 import useGetTourContent from "@/hooks/CMSuseGetTourContent"
 
 import { useNavigate, Navigate } from "react-router-dom"
+import peekLogo from "@/assets/peek-logo.png"
+import acLogo from "@/assets/ac-logo.png"
+import ganalyticsLogo from "@/assets/ganalytics-logo.png"
 
 const AdminDashboard = () => {
   const { isAuthenticated } = useAuth()
@@ -111,16 +114,16 @@ const AdminDashboard = () => {
               <img alt="Your Company" src={LogoIcon} className="h-9 w-auto" />
               <AdjustmentsHorizontalIcon className="h-6 text-teal-500" />
             </div>
-            <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+            <div className="absolute inset-y-0 left-0 flex items-center lg:hidden">
               {" "}
               {/* Mobile menu button */}
             </div>
-            <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="flex flex-1 items-center justify-center lg:items-stretch lg:justify-start">
+              <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
                 {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
               </div>
             </div>
-            <DisclosureButton className="group sm:hidden relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-teal-500 focus:outline-hidden focus:ring-inset">
+            <DisclosureButton className="group lg:hidden relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-teal-500 focus:outline-hidden focus:ring-inset">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
               <Bars3Icon
@@ -132,35 +135,42 @@ const AdminDashboard = () => {
                 className="hidden size-6 group-data-open:block"
               />
             </DisclosureButton>
-            <div className="hidden absolute inset-y-0 right-0 sm:flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <div className="hidden absolute inset-y-0 right-0 lg:flex gap-3 items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
               <a
                 href="https://paradisefoodtours.activehosted.com/app/overview"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex gap-1 items-center  justify-center  px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold  focus:outline-none focus:ring-2  focus:ring-offset-2"
+                className="inline-flex gap-2 items-center justify-center px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
+                <img src={acLogo} alt="AC" className="w-5 h-5" />
                 Active Campaign
                 <ArrowUpRightIcon className="w-3" />
-              </a>{" "}
+              </a>
+
               <a
                 href="https://auth.peek.com/u/login/identifier?state=hKFo2SBuTWs5bjRwSkVDWGZ4THRwRUFOYk5UNm5TYmJOUmtjb6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIFpyWWY4cUNjZGZXTS1wbUZTY0N0OE9Ib3ZhQ25qOTlqo2NpZNkgV1R0SG41UzFIQ3FOS0xqS1NmUFhVelNiUU1HOGVXTnM"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex gap-1 items-center  justify-center  px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold  focus:outline-none focus:ring-2  focus:ring-offset-2"
+                className="inline-flex gap-2 items-center justify-center px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
+                <img src={peekLogo} alt="Peek" className="w-5 h-5" />
                 Peek Pro
                 <ArrowUpRightIcon className="w-3" />
-              </a>{" "}
+              </a>
+
               <a
                 href="https://analytics.google.com/analytics/web/#/p487422264/reports/intelligenthome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex gap-1 items-center rounded px-3 py-2 bg-gray-100 hover:bg-gray-200  font-semibold justify-center  focus:outline-none focus:ring-2  focus:ring-offset-2"
+                className="inline-flex gap-2 items-center justify-center px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
-                Site Analytics
+                <img src={ganalyticsLogo} alt="Analytics" className="w-5 h-5" />
+                Google Analytics
                 <ArrowUpRightIcon className="w-3" />
-              </a>{" "}
+              </a>
+
               <div className="w-[1px] h-6 bg-gray-300"></div>
+
               <button
                 onClick={handleLogout}
                 className="rounded bg-gray-400 hover:bg-coral-500 text-white px-3 py-2 font-semibold hover:cursor-pointer"
@@ -171,18 +181,31 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <DisclosurePanel className="sm:hidden">
-          <div className="space-y-1 pt-2 pb-4">
+        <DisclosurePanel className="lg:hidden">
+          <div className="space-y-1 pt-2 pb-4 w-[95%] md:w-5/6 mx-auto">
             {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 ">
               <DisclosureButton
                 as="a"
-                href=""
+                href="https://paradisefoodtours.activehosted.com/app/overview"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex font-semibold gap-1 border-l-4 border-transparent py-2 pr-4 pl-3 text-base text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+                className="flex items-center font-semibold gap-2 border-l-4 border-transparent py-2 pr-4 pl-3 text-base text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
               >
+                <img src={acLogo} alt="AC" className="w-5 h-5" />
                 Active Campaign
+                <ArrowUpRightIcon className="w-3" />
+              </DisclosureButton>
+
+              <DisclosureButton
+                as="a"
+                href="https://auth.peek.com/u/login/identifier?state=hKFo2SBuTWs5bjRwSkVDWGZ4THRwRUFOYk5UNm5TYmJOUmtjb6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIFpyWWY4cUNjZGZXTS1wbUZTY0N0OE9Ib3ZhQ25qOTlqo2NpZNkgV1R0SG41UzFIQ3FOS0xqS1NmUFhVelNiUU1HOGVXTnM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center font-semibold gap-2 border-l-4 border-transparent py-2 pr-4 pl-3 text-base text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+              >
+                <img src={peekLogo} alt="Peek" className="w-5 h-5" />
+                Peek Pro
                 <ArrowUpRightIcon className="w-3" />
               </DisclosureButton>
 
@@ -191,11 +214,13 @@ const AdminDashboard = () => {
                 href="https://analytics.google.com/analytics/web/#/p487422264/reports/intelligenthome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex font-semibold gap-1 border-l-4 border-transparent py-2 pr-4 pl-3 text-base text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+                className="flex items-center font-semibold gap-2 border-l-4 border-transparent py-2 pr-4 pl-3 text-base text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
               >
+                <img src={ganalyticsLogo} alt="Analytics" className="w-5 h-5" />
                 Site Analytics
                 <ArrowUpRightIcon className="w-3" />
               </DisclosureButton>
+
               <DisclosureButton
                 as="button"
                 onClick={handleLogout}
@@ -211,11 +236,70 @@ const AdminDashboard = () => {
       <motion.div className="relative isolate px-4 mt-16 mx-auto">
         <div className="w-[95%] md:w-5/6 mx-auto">
           <Greeting name={userName} />
+          <h1 className="text-4xl font-bold mt-4 text-zinc-800">
+            Manage your site
+          </h1>
+          <div className="mt-6 space-y-6 text-lg bg-white  rounded p-4 shadow-md">
+            <h3 className="font-semibold text-2xl text-zinc-800">
+              Content Management System (CMS)
+            </h3>
+            {/* 1 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-600">
+                This CMS mirrors the live site layout to give you a{" "}
+                <span className="font-semibold">true visual preview</span>.
+              </p>
+            </div>
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-600">
+                Each text box has{" "}
+                <span className="font-semibold">
+                  minimum and maximum character limits
+                </span>{" "}
+                to maintain proper formatting.
+              </p>
+            </div>
 
-          <h1 className="text-4xl font-bold mt-4">Manage your site</h1>
-          <div className="mt-20 max-w-xl">
-            <div className="mt-20">
-              <h3 className="font-semibold text-xl mb-2">CMS</h3>
+            {/* 2 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-600">
+                Always{" "}
+                <span className="font-semibold">
+                  keep text fully inside the provided boxes
+                </span>{" "}
+                when editing. As long as text fits cleanly on desktop, it will
+                format correctly across devices.
+              </p>
+            </div>
+
+            {/* 3 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-600">
+                To preview mobile appearance:{" "}
+                <span className="font-semibold">Right&nbsp;click</span> →{" "}
+                <span className="font-semibold">Inspect</span> → click the{" "}
+                <span className="font-semibold">Toggle Device Toolbar</span>{" "}
+                icon (top-left of dev tools) and choose a mobile size.
+              </p>
+            </div>
+
+            {/* 4 */}
+            <div className="flex items-start">
+              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
+              <p className="text-zinc-600">
+                Always{" "}
+                <span className="font-semibold">click “Save Changes”</span>{" "}
+                before switching sections or leaving the dashboard.
+              </p>
+            </div>
+          </div>{" "}
+          <div className=" max-w-xl">
+            <div className="mt-10">
+              <p className="font-semibold mb-1">Select a page</p>
               <select
                 value={selectedSection}
                 onChange={e => handleSectionSelect(e.target.value)}
@@ -229,56 +313,6 @@ const AdminDashboard = () => {
                 <option value="faq">FAQ Section</option>
                 <option value="tours">Tour Pages</option>
               </select>
-            </div>
-          </div>
-          <div className="mt-6 space-y-6">
-            {/* 1 */}
-            <div className="flex items-start">
-              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
-              <p className="text-zinc-700">
-                This CMS mirrors the live site layout to give you a{" "}
-                <span className="font-semibold">true visual preview</span>. Each
-                text box has{" "}
-                <span className="font-semibold">
-                  minimum and maximum character limits
-                </span>{" "}
-                to maintain proper formatting.
-              </p>
-            </div>
-
-            {/* 2 */}
-            <div className="flex items-start">
-              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
-              <p className="text-zinc-700">
-                Always{" "}
-                <span className="font-semibold">
-                  keep text fully inside the provided boxes
-                </span>{" "}
-                when editing. As long as text fits cleanly on desktop, it will
-                format correctly across devices.
-              </p>
-            </div>
-
-            {/* 3 */}
-            <div className="flex items-start">
-              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
-              <p className="text-zinc-700">
-                To preview mobile appearance:{" "}
-                <span className="font-semibold">Right&nbsp;click</span> →{" "}
-                <span className="font-semibold">Inspect</span> → click the{" "}
-                <span className="font-semibold">Toggle Device Toolbar</span>{" "}
-                icon (top-left of dev tools) and choose a mobile size.
-              </p>
-            </div>
-
-            {/* 4 */}
-            <div className="flex items-start">
-              <InformationCircleIcon className="mt-0.5 mr-2 h-5 w-5 text-teal-500 shrink-0" />
-              <p className="text-zinc-700">
-                Always{" "}
-                <span className="font-semibold">click “Save Changes”</span>{" "}
-                before switching sections or leaving the dashboard.
-              </p>
             </div>
           </div>
         </div>

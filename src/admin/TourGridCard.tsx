@@ -73,13 +73,13 @@ const TourGridCard: React.FC<Props> = ({
           className="bg-zinc-900 aspect-3/2 w-full rounded-2xl object-cover"
         />
         <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
+          <Hint
+            text="Aspect ratio · 3/2"
+            className="z-10 top-2 left-2 text-lg"
+            always
+          />{" "}
           <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
             {" "}
-            <Hint
-              text="Aspect ratio: 3/2"
-              text2="3w → 2h ↑"
-              className="z-10 -top-8 left-2 text-lg"
-            />
             Upload
             <input
               type="file"
@@ -97,8 +97,8 @@ const TourGridCard: React.FC<Props> = ({
           className={`flex justify-between items-start gap-2 ${!tour.visible ? "filter grayscale opacity-50" : ""}`}
         >
           {/* Title */}
-          <div className="relative flex-1">
-            <Hint text="Min 15 / Max 32" className="-top-6 left-2" />
+          <div className="relative flex-1 group">
+            <Hint text="Card title · max 32" className="-top-6 left-2" />
             <input
               type="text"
               value={tour.title}
@@ -111,7 +111,7 @@ const TourGridCard: React.FC<Props> = ({
           </div>
 
           {/* Price */}
-          <div className="relative">
+          <div className="relative group">
             <input
               type="text"
               value={tour.price}
@@ -121,13 +121,15 @@ const TourGridCard: React.FC<Props> = ({
               }
               className="h-auto w-20 p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 text-base font-bold"
             />
+            <Hint text="Price · max 5" className="-top-6 left-2 w-28" />
           </div>
         </div>
         {/* Description */}
         <div
-          className={`relative ${!tour.visible ? "filter grayscale opacity-50" : ""}`}
+          className={`relative group ${!tour.visible ? "filter grayscale opacity-50" : ""}`}
         >
-          <Hint text="Min 50 / Max 95" className="-top-6 left-2" />
+          <Hint text="Info · max 95 chars" className="-top-6 left-2" />
+
           <textarea
             value={tour.desc}
             maxLength={95}
@@ -141,12 +143,14 @@ const TourGridCard: React.FC<Props> = ({
           className={`flex items-center gap-4 text-sm text-gray-500 ${!tour.visible ? "filter grayscale opacity-50" : ""}`}
         >
           {/* Duration */}
-          <div className="relative flex items-center gap-1">
+          <div className="relative flex items-center gap-1 group">
             <ClockIcon className="w-5 h-5" />
+            <Hint text="Price · max 6" className="-top-6 left-2 w-28" />
+
             <input
               type="text"
               value={tour.duration}
-              maxLength={10}
+              maxLength={6}
               onChange={e =>
                 onChange({ field: "duration", value: e.target.value })
               }
@@ -155,12 +159,14 @@ const TourGridCard: React.FC<Props> = ({
           </div>
 
           {/* Type */}
-          <div className="relative flex items-center gap-1">
+          <div className="relative flex items-center gap-1 group">
             <FireIcon className="w-5 h-5" />
+            <Hint text="Type · max 12" className="-top-6 left-2 w-30" />
+
             <input
               type="text"
               value={tour.type}
-              maxLength={15}
+              maxLength={12}
               onChange={e => onChange({ field: "type", value: e.target.value })}
               className="h-auto w-20 p-1 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700"
             />

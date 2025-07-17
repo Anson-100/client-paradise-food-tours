@@ -37,9 +37,16 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null)
   const location = useLocation() // Get the current route
 
+  // Navbar.tsx
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      const inMenu = menuRef.current?.contains(e.target as Node)
+      // ✅ NEW: ignore clicks that happen inside the Check Dates dialog
+      const inDatesDialog = (e.target as HTMLElement).closest(
+        "[data-checkdates-dialog]"
+      )
+
+      if (!inMenu && !inDatesDialog) {
         setIsMenuToggled(false)
       }
     }
@@ -50,7 +57,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
 
   // Check if the current route is `/waivers`
   const isSimpleNavbar =
-    location.pathname === "/routeOne" ||
+    location.pathname === "/FAQ" ||
     location.pathname === "/routeTwo" ||
     location.pathname.startsWith("/tours") ||
     location.pathname.startsWith("/admin") ||
@@ -61,7 +68,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
   return (
     <nav className="">
       <div
-        className={`${navbarBackground} ${flexBetween} fixed bg-zinc-50 top-0 z-30 w-full max-w-full  h-[72px] `}
+        className={`${navbarBackground} ${flexBetween} fixed bg-white top-0 z-30 w-full max-w-full h-[72px] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]`}
       >
         <div className={`${flexBetween} mx-auto w-full px-4 sm:px-0 sm:w-5/6`}>
           <div className={`${flexBetween} w-full gap-16`}>
@@ -117,9 +124,9 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                   />
                   <div className="h-6 w-[1px] mb-1 bg-neutral-300"></div>
                   <Link
-                    to="/routeOne"
+                    to="/FAQ"
                     onClick={() => {
-                      sessionStorage.setItem("selectedPage", "routeone")
+                      sessionStorage.setItem("selectedPage", "faq")
                     }}
                     className="flex items-center  border-transparent hover:border-teal-500 text-zinc-700 justify-center  mt-1 pb-1 px-1 mx-2 border-b-[2px] font-semibold"
                   >
@@ -134,7 +141,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
             ) : (
               <div className="flex items-center justify-center">
                 <a
-                  href="tel:+1234567890"
+                  href="tel:+1 (866) 328-7935"
                   className="flex items-center gap-2 px-4 py-2 text-zinc-400  rounded-lg hover:bg-zinc-100 transition"
                 >
                   <PhoneIcon className="w-6 h-6" />
@@ -160,9 +167,17 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
       {!isAboveMediumScreens && isMenuToggled && (
         <div
           ref={menuRef}
-          className={`fixed mt-[71px] top-0 right-0 w-full md:w-2/5 sm:rounded-bl-md overflow-hidden z-30 bg-zinc-50 border-b sm:border-l border-neutral-300 ${
-            isMenuToggled ? "h-auto opacity-100" : "h-0 opacity-0"
-          }`}
+          className={`fixed top-0 right-0 mt-[71px] w-full md:w-1/2 
+              md:rounded-bl-md overflow-hidden z-30 bg-white
+              transition-all duration-200
+
+             
+              shadow-[0_4px_6px_-2px_rgba(0,0,0,0.08)]
+
+              
+              md:shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.06),0_4px_6px_-2px_rgba(0,0,0,0.08)]
+
+              ${isMenuToggled ? "h-auto opacity-100" : "h-0 opacity-0"}`}
         >
           {/* MENU ITEMS */}
           <div className="mt-2 flex flex-col items-center text-lg z-50 mx-2">
@@ -205,9 +220,9 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
               <div className="w-11/12 h-[1px] bg-neutral-300 my-2"></div>
               <div className="w-full mb-4">
                 <Link
-                  to="/routeOne"
+                  to="/FAQ"
                   onClick={() => {
-                    sessionStorage.setItem("selectedPage", "routeone")
+                    sessionStorage.setItem("selectedPage", "faq")
                     setIsMenuToggled(false)
                   }}
                   className=" font-semibold pt-4 pb-2 w-full sm:w-5/6 px-4 mx-auto flex items-center text-md text-zinc-500 hover:text-zinc-600"

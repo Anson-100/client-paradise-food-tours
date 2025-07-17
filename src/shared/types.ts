@@ -4,7 +4,7 @@ export enum SelectedPage {
   SectionTwo = "sectiontwo", //about
   SectionThree = "sectionthree", //testimonials
   ContactUs = "contactus",
-  RouteOne = "routeone",
+  RouteOne = "faq",
   RouteTwo = "routetwo",
 }
 

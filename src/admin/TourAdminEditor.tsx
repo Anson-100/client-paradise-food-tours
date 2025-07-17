@@ -4,6 +4,39 @@ import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 import { useState, useEffect } from "react"
 import useGetSingleTourImage from "@/hooks/CMSuseGetSingleTourImage"
 import Hint from "./Hint"
+import {
+  TruckIcon,
+  CreditCardIcon,
+  HeartIcon,
+  UserIcon,
+} from "@heroicons/react/20/solid"
+
+const placeholderFeatures = [
+  {
+    name: "Pickup & Drop-off",
+    description:
+      "This is a private tour with door-to-door service included within Naples. Pickup location and time will be confirmed the day prior to your tour.",
+    icon: TruckIcon,
+  },
+  {
+    name: "What to Bring",
+    description:
+      "Card or cash for drinks (alcoholic beverages are available for purchase at most locations). Cash gratuity for your guide and driver (customary tip is 15–20%).",
+    icon: CreditCardIcon,
+  },
+  {
+    name: "Dietary Accommodations",
+    description:
+      "Vegetarian options are available. Please let us know your needs in advance.",
+    icon: HeartIcon,
+  },
+  {
+    name: "What to Wear",
+    description:
+      "Casual attire and comfortable shoes are recommended. Minimal walking is involved, but you may briefly stand while waiting to be seated.",
+    icon: UserIcon,
+  },
+]
 
 type Props = {
   tour: {
@@ -129,10 +162,10 @@ const TourAdminEditor = ({ tour }: Props) => {
 
     for (let i = 0; i < formData.about.length; i++) {
       const pLen = formData.about[i].trim().length
-      if (pLen < 120 || pLen > 200) {
+      if (pLen < 120 || pLen > 232) {
         setUploadMessage({
           type: "error",
-          text: `“What to expect” paragraph ${i + 1} must be 120 – 200 characters.`,
+          text: `“What to expect” paragraph ${i + 1} must be 120 – 232 characters.`,
         })
         return
       }
@@ -168,10 +201,10 @@ const TourAdminEditor = ({ tour }: Props) => {
       return
     }
 
-    if (ctaLen < 30 || ctaLen > 80) {
+    if (ctaLen < 20 || ctaLen > 50) {
       setUploadMessage({
         type: "error",
-        text: "CTA line must be 30 – 80 characters.",
+        text: "CTA line must be 20 – 50 characters.",
       })
       return
     }
@@ -294,6 +327,17 @@ const TourAdminEditor = ({ tour }: Props) => {
     })
   }
 
+  const [copiedPrompt, setCopiedPrompt] = useState(false)
+
+  const handleCopyPrompt = () => {
+    const promptText =
+      "Reformat the info into 2 sections. Each section must be under 520 characters and split into 2 short paragraphs (2 text blocks per section)."
+    navigator.clipboard.writeText(promptText).then(() => {
+      setCopiedPrompt(true)
+      setTimeout(() => setCopiedPrompt(false), 5000)
+    })
+  }
+
   return (
     <div>
       <div className="mx-auto max-w-2xl lg:max-w-7xl pt-24 sm:pt-32">
@@ -327,16 +371,15 @@ const TourAdminEditor = ({ tour }: Props) => {
           </div>
 
           <div className="pt-4">
-            <div className="h-auto p-2 w-64 bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
+            <div className="h-auto p-2  bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
               Check Dates Button
             </div>
           </div>
         </div>
-
         {/* ABOUT + GALLERY + DETAILS */}
         <section className="my-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-16 px-6 lg:px-8">
           <div className="lg:pr-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-pretty ">
+            <h2 className="text-2xl font-semibold text-gray-500 tracking-tight text-pretty ">
               What to expect
             </h2>
             {formData.about.map((text, i) => (
@@ -347,7 +390,7 @@ const TourAdminEditor = ({ tour }: Props) => {
                 <textarea
                   value={text}
                   onChange={e => handleInputChange(e, "about", i)}
-                  maxLength={200}
+                  maxLength={232}
                   rows={4}
                   className="p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 font-medium px-4 w-full resize-none"
                 />
@@ -453,10 +496,32 @@ const TourAdminEditor = ({ tour }: Props) => {
           </div>
         </section>
         {/* ---------- NEW: About-Text editor ---------- */}
-        <section className="mx-6 lg:mx-8 mt-20 space-y-8">
-          <h2 className="text-2xl font-semibold text-pretty">
-            About Text (NEW)
+        <section className="mx-6 lg:mx-8 mt-20 space-y-6">
+          <h2 className="text-2xl font-semibold text-pretty text-gray-500">
+            About the tour
           </h2>
+
+          <p className="mt-2  text-gray-600">
+            <strong>How to prompt ChatGPT for this section:</strong>
+            <br />
+            <span className="font-medium">
+              1. Write the key information you want included about the tour.
+              <br />
+              2. Then paste this prompt at the end to format it correctly:
+              <br />
+              “Reformat the info into <strong>2 sections</strong>. Each section
+              must be
+              <strong> under 520 characters</strong> and split into
+              <strong> 2 short paragraphs</strong> (2 text blocks per section).”
+            </span>
+          </p>
+
+          <button
+            onClick={handleCopyPrompt}
+            className="inline-block text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md px-4 py-2 shadow-sm hover:cursor-pointer"
+          >
+            {copiedPrompt ? "Copied!" : "Copy Prompt"}
+          </button>
 
           {/* two-column grid so it mirrors front-end layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -496,8 +561,7 @@ const TourAdminEditor = ({ tour }: Props) => {
               />
             </div>
           </div>
-
-          {/* optional photo */}
+          {/* BANNER 1 */}
           <div className="xl:mx-auto xl:max-w-7xl xl:px-8 mt-24">
             <div className="relative aspect-[5/2] w-full overflow-hidden rounded-3xl">
               <img
@@ -511,14 +575,14 @@ const TourAdminEditor = ({ tour }: Props) => {
               />
               <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
                 <Hint
-                  text="Aspect ratio · 2/3"
+                  text="Aspect ratio · 5/2"
                   text2="5w → 2h ↑"
                   className="top-2"
                   always
                 />
 
                 <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
-                  Upload About Photo
+                  Upload banner 1
                   <input
                     type="file"
                     accept="image/*"
@@ -529,17 +593,75 @@ const TourAdminEditor = ({ tour }: Props) => {
               </div>
             </div>
           </div>
-        </section>
+          <section className="py-32 opacity-70 pointer-events-none">
+            <div className="mx-auto max-w-7xl px-6 lg:px-8">
+              <h2 className="text-2xl font-semibold text-gray-700">
+                Checklist
+              </h2>
 
+              <div className="mx-auto mt-8 max-w-2xl lg:max-w-7xl">
+                <dl className="grid max-w-xl grid-cols-1 gap-x-16 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+                  {placeholderFeatures.map(item => (
+                    <div key={item.name} className="relative pl-16">
+                      <dt className="text-lg font-semibold text-gray-700">
+                        <div className="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg">
+                          <item.icon
+                            aria-hidden="true"
+                            className="size-7 text-gray-500"
+                          />
+                        </div>
+                        {item.name}
+                      </dt>
+                      <dd className="mt-2 text-base/7 text-gray-500">
+                        {item.description}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </section>
+          {/* BANNER 2 */}
+          <div className="xl:mx-auto xl:max-w-7xl xl:px-8 ">
+            <div className="relative aspect-[5/2] w-full overflow-hidden rounded-3xl">
+              <img
+                alt=""
+                src={
+                  stagedImages["banner"]
+                    ? URL.createObjectURL(stagedImages["banner"])
+                    : bannerImage
+                }
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <Hint
+                  text="Aspect ratio · 5/2"
+                  text2="5w → 2h ↑"
+                  className="top-2"
+                  always
+                />
+                <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
+                  Upload Banner 2
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => handleFileUpload(e, "banner")}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
         {/* INCLUDED */}
         <section className="py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl lg:max-w-none">
               <div className="text-center space-y-4">
-                <h2 className="text-2xl font-semibold tracking-tight text-pretty ">
+                <h2 className="text-2xl text-gray-400 font-semibold tracking-tight text-pretty ">
                   What's included
                 </h2>
-                <p className="mt-4 text-lg/8 text-gray-600">
+                <p className="mt-4 text-lg/8 text-gray-400">
                   Every tour includes great food, good company, and zero hassle.
                 </p>
               </div>
@@ -585,46 +707,37 @@ const TourAdminEditor = ({ tour }: Props) => {
             </div>
           </div>
         </section>
-
-        {/* BANNER */}
-        {/* <div className="xl:mx-auto xl:max-w-7xl xl:px-8 mt-24">
-        <img
-          alt=""
-          src={formData.bannerImage}
-          className="aspect-5/2 w-full object-cover xl:rounded-3xl"
-        />
-      </div> */}
-        <div className="xl:mx-auto xl:max-w-7xl xl:px-8 mt-24">
+        {/* BANNER 3 */}
+        <div className="xl:mx-auto xl:max-w-7xl xl:px-8 ">
           <div className="relative aspect-[5/2] w-full overflow-hidden rounded-3xl">
             <img
-              alt=""
               src={
-                stagedImages["banner"]
-                  ? URL.createObjectURL(stagedImages["banner"])
-                  : bannerImage
+                stagedImages["avatar"]
+                  ? URL.createObjectURL(stagedImages["avatar"])
+                  : avatarImage
               }
+              alt="banner"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
               <Hint
-                text="Aspect ratio · 2/3"
+                text="Aspect ratio · 5/2"
                 text2="5w → 2h ↑"
                 className="top-2"
                 always
               />
               <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
-                Upload Banner
+                Upload banner 3
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={e => handleFileUpload(e, "banner")}
+                  onChange={e => handleFileUpload(e, "avatar")}
                   className="hidden"
                 />
               </label>
             </div>
           </div>
-        </div>
-
+        </div>{" "}
         {/* TESTIMONIAL */}
         <section className="px-6 py-24 sm:py-32 lg:px-8">
           <figure className="mx-auto max-w-2xl space-y-10">
@@ -651,12 +764,12 @@ const TourAdminEditor = ({ tour }: Props) => {
             </div>
             <figcaption className="flex items-center gap-x-6">
               {/* <div className="size-12 rounded-full bg-white border border-gray-300 shadow-sm flex items-center justify-center text-gray-400">
-              <img
-                src={formData.testimonial.avatar}
-                alt="avatar"
-                className="rounded-full size-full object-cover"
-              />
-            </div> */}
+                <img
+                  src={formData.testimonial.avatar}
+                  alt="avatar"
+                  className="rounded-full size-full object-cover"
+                />
+              </div>
               <div className="size-12 rounded-full bg-white border border-gray-300 shadow-sm relative overflow-hidden">
                 <img
                   src={
@@ -673,7 +786,7 @@ const TourAdminEditor = ({ tour }: Props) => {
                   onChange={e => handleFileUpload(e, "avatar")}
                   className="absolute inset-0 opacity-0 cursor-pointer"
                 />
-              </div>
+              </div> */}
 
               <div className="space-y-1 flex flex-col gap-4">
                 {/* Name */}
@@ -707,7 +820,6 @@ const TourAdminEditor = ({ tour }: Props) => {
             </figcaption>
           </figure>
         </section>
-
         {/* CTA */}
         <section className="bg-blue-50/50 border border-blue-100 rounded-lg mx-6 lg:mx-8 mt-16 mb-8">
           <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
@@ -717,7 +829,7 @@ const TourAdminEditor = ({ tour }: Props) => {
                 <textarea
                   value={formData.ctaLine}
                   onChange={e => handleInputChange(e, "ctaLine")}
-                  maxLength={80}
+                  maxLength={50}
                   rows={2}
                   className="h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner flex items-center justify-center text-blue-700 w-full resize-none"
                 />

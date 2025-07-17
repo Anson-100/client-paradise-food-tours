@@ -17,6 +17,8 @@ import {
   CreditCardIcon,
   HeartIcon,
   UserIcon,
+  MapPinIcon,
+  UserGroupIcon,
 } from "@heroicons/react/20/solid"
 
 const features = [
@@ -53,16 +55,20 @@ const TourLayout = () => {
   console.log("tour slug:", tour?.slug)
   const isWalking = useIsWalking(tour?.slug)
 
+  console.log("TourLayout → params.slug:", slug)
+  console.log("TourLayout → tour?.slug:", tour?.slug)
+  console.log("TourLayout → isWalking:", isWalking)
+
   const galleryKeys = [0, 1, 2, 3].map(i => `${slug}-image-${i}`)
   const bannerKey = `${slug}-banner`
-  // const avatarKey = `${slug}-avatar`
+  const avatarKey = `${slug}-avatar`
 
   const aboutPhotoKey = `${slug}-aboutPhoto`
   const aboutPhotoImg = useGetSingleTourImage(aboutPhotoKey)
 
   const galleryImages = useGetTourPhotos(galleryKeys)
   const bannerImg = useGetSingleTourImage(bannerKey)
-  // const avatarImg = useGetSingleTourImage(avatarKey)
+  const avatarImg = useGetSingleTourImage(avatarKey)
 
   if (isLoading) return <div className="p-10 text-xl">Loading tour...</div>
   if (!tour) return <div className="p-10 text-xl">Tour not found.</div>
@@ -77,6 +83,28 @@ const TourLayout = () => {
     testimonial,
     aboutText,
   } = tour
+
+  const displayFeatures = features.map(feature => {
+    if (isWalking && feature.name === "Pickup & Drop-off") {
+      return {
+        ...feature,
+        name: "Meeting Location",
+        icon: MapPinIcon, // <-- import this
+        description:
+          "This walking tour meets at a designated location, which will be confirmed the day before. Be sure to wear comfortable walking shoes!",
+      }
+    }
+
+    if (isWalking && feature.name === "What to Wear") {
+      return {
+        ...feature,
+        description:
+          "Comfortable clothing and footwear are recommended, as you'll be walking between stops.",
+      }
+    }
+
+    return feature
+  })
 
   console.log("aboutText for slug:", slug, aboutText) // ✅ PLACE IT HERE
 
@@ -267,7 +295,7 @@ const TourLayout = () => {
             </dl>
           </div>
         </section>
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <section className="mx-auto max-w-7xl px-6 lg:px-8 pt-20 pb-32">
           <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
             <h1 className="mt-2 text-2xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-2xl">
               About the tour
@@ -282,23 +310,46 @@ const TourLayout = () => {
               </div>
             </div>
           </div>
-        </div>{" "}
-        <div className="py-18">
+          <div className=" flex flex-col gap-2 items-center justify-center pt-18 w-5/6 mx-auto text-center">
+            <UserGroupIcon
+              aria-hidden="true"
+              className={`h-8 w-8  shrink-0 ${isWalking ? "text-coral-500" : "text-teal-500"} `}
+            />
+            <h3 className="">
+              Do you have more than 14 guests? Call{" "}
+              <a
+                href="tel:8663287935"
+                className={`font-semibold ${isWalking ? "text-coral-500" : "text-teal-500"} hover:underline`}
+              >
+                866-EAT-SWFL
+              </a>{" "}
+              for a custom quote.
+            </h3>
+          </div>
+        </section>{" "}
+        <div className=" xl:mx-auto xl:max-w-8xl xl:px-8">
+          <img
+            alt=""
+            src={aboutPhotoImg}
+            className="aspect-[5/3] sm:aspect-[5/2] sm:rounded-2xl lg:rounded-none  w-full object-cover  transition-transform duration-700 xl:rounded-3xl"
+          />
+        </div>
+        <section className="py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto ">
               <h2 className="text-2xl text-gray-900 font-semibold ">
                 Checklist
               </h2>
             </div>
-            <div className="mx-auto mt-16 max-w-2xl lg:max-w-7xl">
+            <div className="mx-auto mt-8 max-w-2xl lg:max-w-7xl">
               <dl className="grid max-w-xl grid-cols-1 gap-x-16 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
-                {features.map(feature => (
+                {displayFeatures.map(feature => (
                   <div key={feature.name} className="relative pl-16">
                     <dt className="text-lg font-semibold text-gray-900">
-                      <div className="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg ">
+                      <div className="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg">
                         <feature.icon
                           aria-hidden="true"
-                          className={`size-8 ${isWalking ? "text-coral-500" : "text-teal-500"}`}
+                          className={`size-7 ${isWalking ? "text-coral-500" : "text-teal-500"}`}
                         />
                       </div>
                       {feature.name}
@@ -311,27 +362,18 @@ const TourLayout = () => {
               </dl>
             </div>
           </div>
-          <h3 className="text-center pt-18">
-            Do you have more than 14 guests? Call{" "}
-            <span
-              className={`font-semibold ${isWalking ? "text-coral-500" : "text-teal-500"}`}
-            >
-              866-EAT-SWFL
-            </span>{" "}
-            for a custom quote.
-          </h3>
-        </div>
+        </section>
         {aboutPhotoImg && (
-          <div className="mt-32  xl:mx-auto xl:max-w-8xl xl:px-8">
+          <div className="  xl:mx-auto xl:max-w-8xl xl:px-8">
             <img
-              src={aboutPhotoImg}
+              src={bannerImg}
               alt="About the tour"
               className="aspect-[5/3] sm:aspect-[5/2] sm:rounded-2xl lg:rounded-none  w-full object-cover  transition-transform duration-700 xl:rounded-3xl"
             />
           </div>
         )}
         {/* INCLUDED */}
-        <section className="py-24 sm:py-36">
+        <section className="py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl lg:max-w-none">
               <div className="text-center">
@@ -363,42 +405,43 @@ const TourLayout = () => {
           </div>
         </section>
         {/* BANNER IMAGE */}
-        <div className=" xl:mx-auto xl:max-w-8xl xl:px-8">
-          <img
-            alt=""
-            src={bannerImg}
-            className="aspect-[5/3] sm:aspect-[5/2] sm:rounded-2xl lg:rounded-none  w-full object-cover  transition-transform duration-700 xl:rounded-3xl"
-          />
-        </div>
+        {avatarImg && (
+          <div className="xl:mx-auto xl:max-w-8xl xl:px-8">
+            <img
+              alt="Banner"
+              src={avatarImg}
+              className="aspect-[5/3] sm:aspect-[5/2] sm:rounded-2xl lg:rounded-none w-full object-cover transition-transform duration-700 xl:rounded-3xl"
+            />
+          </div>
+        )}
         {/* TESTIMONIAL */}
-        <section className="px-6 py-20 my-10 sm:py-32 lg:px-8 relative isolate overflow-hidden">
-          {/* <div className="absolute top-0 left-1/2 -z-10 h-200 w-360 -translate-x-1/2 opacity-20 lg:left-36" />
-          <div className="absolute inset-y-0 right-1/2 -z-10 mr-12 w-[150vw] origin-bottom-left skew-x-[-30deg] shadow-lg ring-1 shadow-teal-500/10 ring-gray-100 sm:mr-20 md:mr-0 lg:right-full lg:-mr-36 lg:origin-center" /> */}
+        <section className="px-6 py-20  sm:py-20 sm:my-32 lg:px-8 relative isolate overflow-hidden">
           <figure className="mx-auto max-w-2xl">
             <p className="sr-only">5 out of 5 stars</p>
             <div className="flex gap-x-1 text-yellow-500">
               {[...Array(5)].map((_, i) => (
                 <StarIcon
                   key={i}
-                  className="size-5 flex-none"
+                  className="size-6 flex-none"
                   aria-hidden="true"
                 />
               ))}
             </div>
-            <blockquote className="mt-10 text-xl/8 font-semibold tracking-tight text-gray-900 sm:text-2xl/9 relative">
-              {/* <svg
+
+            <blockquote className="mt-10 text-xl/8 font-semibold tracking-tight text-gray-700 sm:text-2xl/9 relative">
+              <svg
                 fill="none"
                 viewBox="0 0 162 128"
                 aria-hidden="true"
-                className="absolute -top-12 right-12 -z-10 h-32 stroke-gray-500/10"
+                className="absolute -top-14 left-0 -z-10 h-32 stroke-zinc-600/20"
               >
                 <path
                   d="M65.5697 118.507L65.8918 118.89C68.9503 116.314 71.367 113.253 73.1386 109.71C74.9162 106.155 75.8027 102.28 75.8027 98.0919C75.8027 94.237 75.16 90.6155 73.8708 87.2314C72.5851 83.8565 70.8137 80.9533 68.553 78.5292C66.4529 76.1079 63.9476 74.2482 61.0407 72.9536C58.2795 71.4949 55.276 70.767 52.0386 70.767C48.9935 70.767 46.4686 71.1668 44.4872 71.9924L44.4799 71.9955L44.4726 71.9988C42.7101 72.7999 41.1035 73.6831 39.6544 74.6492C38.2407 75.5916 36.8279 76.455 35.4159 77.2394L35.4047 77.2457L35.3938 77.2525C34.2318 77.9787 32.6713 78.3634 30.6736 78.3634C29.0405 78.3634 27.5131 77.2868 26.1274 74.8257C24.7483 72.2185 24.0519 69.2166 24.0519 65.8071C24.0519 60.0311 25.3782 54.4081 28.0373 48.9335C30.703 43.4454 34.3114 38.345 38.8667 33.6325C43.5812 28.761 49.0045 24.5159 55.1389 20.8979C60.1667 18.0071 65.4966 15.6179 71.1291 13.7305C73.8626 12.8145 75.8027 10.2968 75.8027 7.38572C75.8027 3.6497 72.6341 0.62247 68.8814 1.1527C61.1635 2.2432 53.7398 4.41426 46.6119 7.66522C37.5369 11.6459 29.5729 17.0612 22.7236 23.9105C16.0322 30.6019 10.618 38.4859 6.47981 47.558L6.47976 47.558L6.47682 47.5647C2.4901 56.6544 0.5 66.6148 0.5 77.4391C0.5 84.2996 1.61702 90.7679 3.85425 96.8404L3.8558 96.8445C6.08991 102.749 9.12394 108.02 12.959 112.654L12.959 112.654L12.9646 112.661C16.8027 117.138 21.2829 120.739 26.4034 123.459L26.4033 123.459L26.4144 123.465C31.5505 126.033 37.0873 127.316 43.0178 127.316C47.5035 127.316 51.6783 126.595 55.5376 125.148L55.5376 125.148L55.5477 125.144C59.5516 123.542 63.0052 121.456 65.9019 118.881L65.5697 118.507Z"
                   id="b56e9dab-6ccb-4d32-ad02-6b4bb5d9bbeb"
                 />
                 <use x={86} href="#b56e9dab-6ccb-4d32-ad02-6b4bb5d9bbeb" />
-              </svg> */}
-              <p>"{testimonial.quote}"</p>
+              </svg>
+              <p>{testimonial.quote}</p>
             </blockquote>
             <figcaption className="mt-10 flex items-center gap-x-6">
               {/* <img
@@ -407,7 +450,7 @@ const TourLayout = () => {
                 className="size-12 rounded-full bg-gray-50"
               /> */}
               <div className="text-sm/6">
-                <div className="font-semibold text-gray-900">
+                <div className="font-semibold text-gray-600">
                   {testimonial.name}
                 </div>
                 <div className="mt-0.5 text-gray-600">{testimonial.role}</div>

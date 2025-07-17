@@ -5,6 +5,12 @@ import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
 import Hint from "./Hint"
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 
+/* limits */
+const TITLE_MIN = 30,
+  TITLE_MAX = 40
+const SUB_MIN = 150,
+  SUB_MAX = 180
+
 const HomeAdminEditor = () => {
   const { content, isLoading } = useGetSceneContent("home")
   const { compressImage } = useCompressImageUpload()
@@ -94,25 +100,23 @@ const HomeAdminEditor = () => {
 
   const handleSaveChanges = async () => {
     // Perform manual min/max validation
-    const titleLength = formData.title.trim().length
-    const subtitleLength = formData.subtitle.trim().length
+    const problems: string[] = []
 
-    if (titleLength < 30 || titleLength > 40) {
+    const titleLen = formData.title.trim().length
+    if (titleLen < TITLE_MIN || titleLen > TITLE_MAX)
+      problems.push(`Title (${titleLen}/${TITLE_MIN}-${TITLE_MAX})`)
+
+    const subLen = formData.subtitle.trim().length
+    if (subLen < SUB_MIN || subLen > SUB_MAX)
+      problems.push(`Subtitle (${subLen}/${SUB_MIN}-${SUB_MAX})`)
+
+    if (problems.length) {
       setUploadMessage({
         type: "error",
-        text: "Title must be between 30 and 40 characters.",
+        text: `Fix: ${problems.join(", ")}`,
       })
-      return
+      return // stop: nothing uploads while invalid
     }
-
-    if (subtitleLength < 150 || subtitleLength > 180) {
-      setUploadMessage({
-        type: "error",
-        text: "Subtext must be between 150 and 180 characters.",
-      })
-      return
-    }
-
     setIsUploading(true)
     setUploadMessage(null)
 
@@ -175,26 +179,30 @@ const HomeAdminEditor = () => {
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl">
                   {/* ───────────── Title ───────────── */}
-                  <div className="relative">
-                    <Hint text="Min 30  /  Max 40" />
+                  <div className="relative group">
+                    <Hint text={`Title · ${TITLE_MIN}–${TITLE_MAX} chars`} />
                     <textarea
                       value={formData.title}
                       onChange={e => handleInputChange(e, "title")}
                       rows={2}
-                      maxLength={40}
-                      className="mt-4 resize-none h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-5xl sm:text-7xl font-semibold tracking-tight text-pretty leading-tight"
+                      maxLength={TITLE_MAX} // ⬅ use constant
+                      className=" resize-none h-auto p-2 bg-blue-50 border border-blue-200
+               rounded-md shadow-inner text-blue-700 w-full text-5xl
+               sm:text-7xl font-semibold tracking-tight text-pretty leading-tight"
                     />
                   </div>
 
                   {/* ──────────── Subtitle ─────────── */}
-                  <div className="relative mt-6">
-                    <Hint text="Min 150  /  Max 180" />
+                  <div className="relative mt-6 group">
+                    <Hint text={`Subtitle · ${SUB_MIN}–${SUB_MAX} chars`} />
                     <textarea
                       value={formData.subtitle}
                       onChange={e => handleInputChange(e, "subtitle")}
                       rows={3}
-                      maxLength={180}
-                      className="mt-4 resize-none h-auto p-2 bg-blue-50 border border-blue-200 rounded-md shadow-inner text-blue-700 w-full text-lg font-medium sm:max-w-md sm:text-xl/8 lg:max-w-none text-pretty"
+                      maxLength={SUB_MAX} // ⬅ use constant
+                      className=" resize-none h-auto p-2 bg-blue-50 border border-blue-200
+               rounded-md shadow-inner text-blue-700 w-full text-lg font-medium
+               sm:max-w-md sm:text-xl/8 lg:max-w-none text-pretty"
                     />
                   </div>
 
@@ -227,7 +235,7 @@ const HomeAdminEditor = () => {
                         setDragOverKey(null)
                       }}
                     >
-                      <Hint text="Desktop image" />
+                      <Hint text="Deskop image" className="-top-8" always />
 
                       <img
                         alt=""
@@ -239,6 +247,12 @@ const HomeAdminEditor = () => {
                         className="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity rounded-xl">
+                        {" "}
+                        <Hint
+                          text="Aspect ratio · 2/3"
+                          className="top-2"
+                          always
+                        />
                         <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                           Upload
                           <input
@@ -253,8 +267,6 @@ const HomeAdminEditor = () => {
                   </div>
 
                   <div className="mr-auto w-50 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36 relative">
-                    <Hint text="Aspect ratio: 2/3" text2="2w → 3h ↑" />
-
                     {["image-1", "image-2"].map((key, i) => (
                       <div
                         key={key}
@@ -285,6 +297,12 @@ const HomeAdminEditor = () => {
                           className="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
                         />
                         <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity rounded-xl">
+                          {" "}
+                          <Hint
+                            text="Aspect ratio · 2/3"
+                            className="top-2"
+                            always
+                          />
                           <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                             Upload
                             <input
@@ -330,6 +348,12 @@ const HomeAdminEditor = () => {
                           className="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
                         />
                         <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity rounded-xl">
+                          {" "}
+                          <Hint
+                            text="Aspect ratio · 2/3"
+                            className="top-2"
+                            always
+                          />
                           <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                             Upload
                             <input

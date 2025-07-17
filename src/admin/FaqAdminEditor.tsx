@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
+import Hint from "./Hint"
+
+const TAGLINE_MAX = 44
+const QUESTION_MAX = 80
+const ANSWER_MAX = 300
+
+const TAGLINE_MIN = 20
+const QUESTION_MIN = 10
+const ANSWER_MIN = 30
 
 interface PolicyItem {
   id: string
@@ -54,6 +63,27 @@ const RouteOne: React.FC = () => {
     setIsUploading(true)
     setUploadMessage(null)
 
+    // validate lengths before saving
+    const isInvalid =
+      formData.tagline.length < TAGLINE_MIN ||
+      formData.tagline.length > TAGLINE_MAX ||
+      formData.items.some(
+        i =>
+          i.question.length < QUESTION_MIN ||
+          i.question.length > QUESTION_MAX ||
+          i.answer.length < ANSWER_MIN ||
+          i.answer.length > ANSWER_MAX
+      )
+
+    if (isInvalid) {
+      setUploadMessage({
+        type: "error",
+        text: "Please make sure all fields are within required character limits.",
+      })
+      setIsUploading(false)
+      return
+    }
+
     try {
       const res = await fetch(
         "https://pq6sx039ia.execute-api.us-east-2.amazonaws.com/dev/tour-json",
@@ -84,21 +114,22 @@ const RouteOne: React.FC = () => {
     <section id="routeone" className="min-h-screen isolate  px-6">
       <motion.div className="w-full sm:w-3/4 mx-auto mb-4 pb-20">
         <div className="flex flex-col gap-2 pt-24 text-center">
-          <input
-            type="text"
-            value={formData.sceneTitle}
-            onChange={e => handleTopLevelChange("sceneTitle", e.target.value)}
-            className="w-full p-3 mb-4 bg-blue-100 border border-blue-300 rounded-md text-center font-semibold tracking-tight text-zinc-700"
-            placeholder="Scene Title"
-          />
+          <div className="w-full p-3 mb-4  rounded-md text-center font-semibold tracking-tight text-zinc-700">
+            {formData.sceneTitle}
+          </div>
 
-          <input
-            type="text"
-            value={formData.tagline}
-            onChange={e => handleTopLevelChange("tagline", e.target.value)}
-            className="w-full p-3 mb-10 bg-blue-100 border border-blue-300 rounded-md text-center text-4xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-5xl"
-            placeholder="Tagline"
-          />
+          {/* TAGLINE – hover shows rules */}
+          <div className="relative group mb-10">
+            <input
+              type="text"
+              value={formData.tagline}
+              onChange={e => handleTopLevelChange("tagline", e.target.value)}
+              maxLength={TAGLINE_MAX}
+              className="w-full p-3 bg-blue-100 border border-blue-300 rounded-md text-center text-4xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-5xl"
+              placeholder="Tagline"
+            />
+            <Hint text={`Tagline · Max ${TAGLINE_MAX} chars`} />
+          </div>
         </div>
 
         <div className="space-y-10">
@@ -107,24 +138,32 @@ const RouteOne: React.FC = () => {
               <div className="text-sm font-semibold text-gray-500 mb-2">
                 Question {index + 1}
               </div>
-              <input
-                type="text"
-                value={item.question}
-                onChange={e =>
-                  handleItemChange(item.id, "question", e.target.value)
-                }
-                className="w-full p-2 bg-blue-100 border border-blue-300 rounded-md text-lg font-semibold mb-3"
-                placeholder="Question"
-              />
-              <textarea
-                value={item.answer}
-                onChange={e =>
-                  handleItemChange(item.id, "answer", e.target.value)
-                }
-                rows={4}
-                className="w-full p-2 bg-blue-100 border border-blue-300 rounded-md text-base"
-                placeholder="Answer"
-              />
+              <div className="relative group mb-3">
+                <input
+                  type="text"
+                  value={item.question}
+                  onChange={e =>
+                    handleItemChange(item.id, "question", e.target.value)
+                  }
+                  maxLength={QUESTION_MAX}
+                  className="w-full p-2 bg-blue-100 border border-blue-300 rounded-md text-lg font-semibold"
+                  placeholder="Question"
+                />
+                <Hint text={`Question · max ${QUESTION_MAX} chars`} />
+              </div>
+              <div className="relative group">
+                <textarea
+                  value={item.answer}
+                  onChange={e =>
+                    handleItemChange(item.id, "answer", e.target.value)
+                  }
+                  maxLength={ANSWER_MAX}
+                  rows={4}
+                  className="w-full p-2 bg-blue-100 border border-blue-300 rounded-md text-base"
+                  placeholder="Answer"
+                />
+                <Hint text={`Answer · max ${ANSWER_MAX} chars`} />
+              </div>
             </div>
           ))}
         </div>

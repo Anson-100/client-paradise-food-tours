@@ -50,7 +50,7 @@ const SectionThree = ({ setSelectedPage }: Props) => {
   }
 
   return (
-    <section id="sectionthree" className="relative isolate pb-32 w-full">
+    <section id="sectionthree" className="relative isolate pb-12 w-full">
       <motion.div
         className="mx-auto max-w-7xl px-6 lg:px-8"
         onViewportEnter={() => setSelectedPage(SelectedPage.SectionThree)}
@@ -80,18 +80,8 @@ const SectionThree = ({ setSelectedPage }: Props) => {
                   rel="noopener noreferrer"
                   className="text-teal-500 font-semibold hover:underline ml-1"
                 >
-                  See more reviews on Google
-                </a>{" "}
-                or{" "}
-                <a
-                  href="https://www.yelp.com/biz/driven-foodie-tours-bonita-springs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-teal-500 font-semibold hover:underline"
-                >
-                  check us out on Yelp
+                  Check out more reviews on Google.
                 </a>
-                .
               </p>
             </div>
           </div>
@@ -101,7 +91,7 @@ const SectionThree = ({ setSelectedPage }: Props) => {
         <img
           alt={testimonialContent.sceneTitle || "Section Image"}
           src={sectionImageUrl}
-          className="aspect-5/2 w-full object-cover xl:rounded-3xl"
+          className="aspect-[5/3] sm:aspect-[5/2] sm:rounded-2xl lg:rounded-none  w-full object-cover  transition-transform duration-700 xl:rounded-3xl"
         />
       </div>
     </section>

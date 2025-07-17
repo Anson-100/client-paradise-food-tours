@@ -2,8 +2,9 @@ import { useEffect, useState, useRef, ReactNode, useMemo } from "react"
 import ReactDOM from "react-dom"
 import ActionButton from "./ActionButton"
 import CheckDatesDialog from "@/components/CheckDatesDialog"
+import { AnimatePresence, motion } from "framer-motion"
 
-import tourTagMap from "@/data/tourTagMap.json"
+// import tourTagMap from "@/data/tourTagMap.json"
 import interactionTagMap from "@/data/interactionTagMap.json"
 
 /* ─── types ────────────────────────────────────────────── */
@@ -30,13 +31,12 @@ const CheckDatesAction = ({ tourSlug, locationKey, customButton }: Props) => {
     /* 1) always the interaction tag */
     ids.push(interactionTagMap[locationKey])
 
-    /* 2) optionally the tour tag */
-    if (tourSlug && tourTagMap[tourSlug as keyof typeof tourTagMap]) {
-      ids.push(tourTagMap[tourSlug as keyof typeof tourTagMap])
-    }
+    // if (tourSlug && tourTagMap[tourSlug as keyof typeof tourTagMap]) {
+    //   ids.push(tourTagMap[tourSlug as keyof typeof tourTagMap])
+    // }
 
     return ids
-  }, [tourSlug, locationKey])
+  }, [locationKey])
 
   useEffect(() => {
     const el = modalRoot.current // cache ref
@@ -65,19 +65,50 @@ const CheckDatesAction = ({ tourSlug, locationKey, customButton }: Props) => {
         <ActionButton onClick={() => setIsOpen(true)}>Check dates</ActionButton>
       )}
 
-      {isOpen &&
-        ReactDOM.createPortal(
-          <div
-            className="fixed inset-0 bg-black/50 z-50"
-            onMouseDown={e => e.target === e.currentTarget && setIsOpen(false)}
-          >
-            <CheckDatesDialog
-              onClose={() => setIsOpen(false)}
-              tagIds={tagIds}
-            />
-          </div>,
-          modalRoot.current
-        )}
+      {ReactDOM.createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              {/* overlay */}
+              <motion.div
+                className="fixed inset-0 z-50 bg-black/50"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsOpen(false)}
+              />
+
+              {/* centered dialog */}
+              <motion.div
+                className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                variants={{
+                  hidden: { opacity: 0, scale: 0.95 },
+                  visible: {
+                    opacity: 1,
+                    scale: 1,
+                    transition: { duration: 0.15 },
+                  },
+                  exit: {
+                    opacity: 0,
+                    scale: 0.95,
+                    transition: { duration: 0.1 },
+                  },
+                }}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <CheckDatesDialog
+                  onClose={() => setIsOpen(false)}
+                  tagIds={tagIds}
+                  initialTourSlug={tourSlug}
+                />
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body // one portal target that always exists
+      )}
     </>
   )
 }

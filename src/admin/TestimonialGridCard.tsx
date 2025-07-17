@@ -1,6 +1,12 @@
 import { StarIcon } from "@heroicons/react/24/solid"
 import React from "react"
-import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
+// import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
+import Hint from "./Hint"
+
+const BODY_MIN = 120
+const BODY_MAX = 180
+const NAME_MIN = 3
+const NAME_MAX = 30
 
 type Testimonial = {
   body: string
@@ -26,18 +32,19 @@ type Props = {
 
 const TestimonialGridCard: React.FC<Props> = ({
   testimonial,
-  index,
+
   onChange,
-  dragOverKey,
-  setDragOverKey,
-  stagedImages,
-  handleDrop,
-  handleFileUpload,
+  // dragOverKey,
+  // setDragOverKey,
+  // stagedImages,
+  // handleDrop,
+  // handleFileUpload,
+  // index,
 }) => {
-  const imageKey = `testimonial-avatar-${index}`
-  const avatarImageUrl = stagedImages[imageKey]
-    ? URL.createObjectURL(stagedImages[imageKey]!)
-    : useGetCloudImage(testimonial.author.avatar)
+  // const imageKey = `testimonial-avatar-${index}`
+  // const avatarImageUrl = stagedImages[imageKey]
+  //   ? URL.createObjectURL(stagedImages[imageKey]!)
+  //   : useGetCloudImage(testimonial.author.avatar)
 
   return (
     <div className="pt-8 sm:inline-block sm:w-full sm:px-4">
@@ -49,16 +56,20 @@ const TestimonialGridCard: React.FC<Props> = ({
         </div>
 
         <blockquote className="text-gray-900">
-          <textarea
-            value={testimonial.body}
-            onChange={e => onChange({ field: "body", value: e.target.value })}
-            className="w-full bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2 text-blue-700 resize-none"
-            rows={4}
-          />
+          <div className="relative group">
+            <textarea
+              value={testimonial.body}
+              onChange={e => onChange({ field: "body", value: e.target.value })}
+              className="w-full bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2 text-blue-700 resize-none"
+              rows={4}
+              maxLength={BODY_MAX}
+            />
+            <Hint text={`Testimonial · ${BODY_MIN}–${BODY_MAX} chars`} />
+          </div>
         </blockquote>
 
         <figcaption className="mt-4 flex items-center gap-x-4">
-          <div className="flex flex-col items-center gap-1">
+          {/* <div className="flex flex-col items-center gap-1">
             <div
               onDragEnter={e => {
                 e.preventDefault()
@@ -95,14 +106,18 @@ const TestimonialGridCard: React.FC<Props> = ({
                 className="hidden"
               />
             </label>
-          </div>
+          </div> */}
 
-          <input
-            type="text"
-            value={testimonial.author.name}
-            onChange={e => onChange({ field: "name", value: e.target.value })}
-            className="bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2 text-blue-700 font-semibold w-full"
-          />
+          <div className="relative group w-full">
+            <input
+              type="text"
+              value={testimonial.author.name}
+              onChange={e => onChange({ field: "name", value: e.target.value })}
+              className="bg-blue-50 border border-blue-200 rounded-md shadow-inner p-2 text-blue-700 font-semibold w-full"
+              maxLength={NAME_MAX}
+            />
+            <Hint text={`Name · ${NAME_MIN}–${NAME_MAX} chars`} />
+          </div>
         </figcaption>
       </figure>
     </div>

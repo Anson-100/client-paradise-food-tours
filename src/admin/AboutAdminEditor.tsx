@@ -4,6 +4,18 @@ import useGetSceneContent from "@/hooks/CMSuseGetSceneContent"
 
 import useCompressImageUpload from "@/hooks/useCompressImageUpload"
 import useGetCloudImage from "@/hooks/CMSuseGetCloudImage"
+import Hint from "./Hint" // hover help
+
+// ─── character limits ───
+
+const TAG_MIN = 20,
+  TAG_MAX = 80
+const HEAD_MIN = 20,
+  HEAD_MAX = 40
+const SUB_MIN = 40,
+  SUB_MAX = 70
+const TEXT_MIN = 250,
+  TEXT_MAX = 330
 
 type AboutFormData = {
   sceneTitle: string
@@ -110,7 +122,56 @@ const AboutAdminEditor = () => {
     }
   }
 
+  // put this _inside_ AboutAdminEditor, replace the old handleSaveChanges
   const handleSaveChanges = async () => {
+    // ─── 1. validate character limits ───
+    const problems: string[] = []
+
+    const check = (label: string, val: string, min: number, max: number) => {
+      const len = val.trim().length
+      if (len < min || len > max)
+        problems.push(`${label} (${len}/${min}-${max})`)
+    }
+
+    check("Tagline", formData.tagline, TAG_MIN, TAG_MAX)
+
+    check(
+      "Section 1 → heading",
+      formData.aboutSection1.heading,
+      HEAD_MIN,
+      HEAD_MAX
+    )
+    check(
+      "Section 1 → subheading",
+      formData.aboutSection1.subheading,
+      SUB_MIN,
+      SUB_MAX
+    )
+    check("Section 1 → text", formData.aboutSection1.text, TEXT_MIN, TEXT_MAX)
+
+    check(
+      "Section 2 → heading",
+      formData.aboutSection2.heading,
+      HEAD_MIN,
+      HEAD_MAX
+    )
+    check(
+      "Section 2 → subheading",
+      formData.aboutSection2.subheading,
+      SUB_MIN,
+      SUB_MAX
+    )
+    check("Section 2 → text", formData.aboutSection2.text, TEXT_MIN, TEXT_MAX)
+
+    if (problems.length) {
+      setUploadMessage({
+        type: "error",
+        text: `Fix these fields: ${problems.join(", ")}`,
+      })
+      return
+    }
+
+    // ─── 2. proceed with uploads/save (unchanged) ───
     setIsUploading(true)
     setUploadMessage(null)
 
@@ -167,68 +228,91 @@ const AboutAdminEditor = () => {
       <motion.div className="overflow-hidden relative isolate">
         <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
           <div className="flex flex-col gap-2 pt-24 xl:pt-30">
-            <input
-              type="text"
-              value={formData.sceneTitle}
-              onChange={e => handleTopLevelChange("sceneTitle", e.target.value)}
-              className="font-semibold tracking-tight text-blue-700 bg-blue-50 border border-blue-200 rounded-md p-2"
-            />
-            <input
-              type="text"
-              value={formData.tagline}
-              onChange={e => handleTopLevelChange("tagline", e.target.value)}
-              className="text-4xl font-semibold tracking-tight text-pretty text-blue-700 sm:text-5xl bg-blue-50 border border-blue-200 rounded-md p-2"
-            />
+            {/* SCENE TITLE (read-only) */}
+
+            <div className="font-semibold tracking-tight   rounded-md p-2">
+              {formData.sceneTitle}
+            </div>
+
+            {/* TAGLINE */}
+            <div className="relative group mt-2">
+              <input
+                type="text"
+                value={formData.tagline}
+                onChange={e => handleTopLevelChange("tagline", e.target.value)}
+                maxLength={TAG_MAX}
+                className="w-full text-4xl font-semibold tracking-tight text-pretty text-blue-700 sm:text-5xl bg-blue-50 border border-blue-200 rounded-md p-2"
+                placeholder="Tagline"
+              />
+              <Hint text={`Tagline · ${TAG_MIN}–${TAG_MAX} chars`} />
+            </div>
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-12 lg:grid-cols-6 lg:grid-rows-2 mb-4">
             {/* Section 1 Content */}
             <div className="flex p-px lg:col-span-4">
-              <div className="overflow-hidden w-full md:h-70 rounded-lg border bg-zinc-50 border-gray-200 max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]">
+              <div className="overflow-hidden w-full  rounded-lg border bg-zinc-50 border-gray-200 max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]">
                 <div className="p-8">
-                  <input
-                    type="text"
-                    value={formData.aboutSection1.heading}
-                    onChange={e =>
-                      handleNestedChange(
-                        "aboutSection1",
-                        "heading",
-                        e.target.value
-                      )
-                    }
-                    className="text-sm font-semibold text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
-                  />
-                  <input
-                    type="text"
-                    value={formData.aboutSection1.subheading}
-                    onChange={e =>
-                      handleNestedChange(
-                        "aboutSection1",
-                        "subheading",
-                        e.target.value
-                      )
-                    }
-                    className="mt-3 text-xl font-semibold tracking-tight text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
-                  />
-                  <textarea
-                    value={formData.aboutSection1.text}
-                    onChange={e =>
-                      handleNestedChange(
-                        "aboutSection1",
-                        "text",
-                        e.target.value
-                      )
-                    }
-                    className="mt-3 max-w-2xl text-base text-blue-700 leading-relaxed w-full bg-blue-50 border border-blue-200 rounded-md p-2"
-                    rows={4}
-                  />
+                  {/* HEADING */}
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={formData.aboutSection1.heading}
+                      onChange={e =>
+                        handleNestedChange(
+                          "aboutSection1",
+                          "heading",
+                          e.target.value
+                        )
+                      }
+                      maxLength={HEAD_MAX}
+                      className="text-sm font-semibold text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
+                    />
+                    <Hint text={`Heading · ${HEAD_MIN}–${HEAD_MAX} chars`} />
+                  </div>
+
+                  {/* SUBHEADING */}
+                  <div className="relative group mt-3">
+                    <input
+                      type="text"
+                      value={formData.aboutSection1.subheading}
+                      onChange={e =>
+                        handleNestedChange(
+                          "aboutSection1",
+                          "subheading",
+                          e.target.value
+                        )
+                      }
+                      maxLength={SUB_MAX}
+                      className="text-xl font-semibold tracking-tight text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
+                    />
+                    <Hint text={`Subheading · ${SUB_MIN}–${SUB_MAX} chars`} />
+                  </div>
+
+                  {/* BODY TEXT */}
+                  <div className="relative group mt-3">
+                    <textarea
+                      value={formData.aboutSection1.text}
+                      onChange={e =>
+                        handleNestedChange(
+                          "aboutSection1",
+                          "text",
+                          e.target.value
+                        )
+                      }
+                      maxLength={TEXT_MAX}
+                      rows={4}
+                      className="max-w-2xl resize-none text-base text-blue-700 leading-relaxed w-full bg-blue-50 border border-blue-200 rounded-md p-2"
+                    />
+                    <Hint text={`Text · ${TEXT_MIN}–${TEXT_MAX} chars`} />
+                  </div>
                 </div>
               </div>
             </div>
             {/* IMG1====== */}
             <div className="flex p-px lg:col-span-2">
               <div
-                className={`relative overflow-hidden rounded-lg w-full lg:rounded-tr-[2rem] transition-all duration-200 ${
+                className={`relative overflow-hidden rounded-lg w-full lg:rounded-tr-[2rem] transition-all duration-200 group ${
                   dragOverKey === "about-image-1"
                     ? "ring-4 ring-teal-500 ring-offset-2"
                     : "ring-1 ring-white/15"
@@ -253,7 +337,13 @@ const AboutAdminEditor = () => {
                   alt=""
                   className="aspect-[3/2] w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
+                  <Hint
+                    text="Aspect ratio · 3/2"
+                    text2="3w → 2h ↑"
+                    className="z-10 top-2 left-2 text-lg"
+                    always
+                  />
                   <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                     Upload
                     <input
@@ -270,7 +360,7 @@ const AboutAdminEditor = () => {
             {/* IMG2======= */}
             <div className="flex p-px lg:col-span-2">
               <div
-                className={`relative overflow-hidden rounded-lg w-full lg:rounded-bl-[2rem] transition-all duration-200 ${
+                className={`relative overflow-hidden rounded-lg w-full lg:rounded-bl-[2rem] transition-all duration-200 group ${
                   dragOverKey === "about-image-2"
                     ? "ring-4 ring-teal-500 ring-offset-2"
                     : "ring-1 ring-white/15"
@@ -295,7 +385,13 @@ const AboutAdminEditor = () => {
                   alt=""
                   className="aspect-[3/2] w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 flex items-end justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
+                  <Hint
+                    text="Aspect ratio · 3/2"
+                    text2="3w → 2h ↑"
+                    className="z-10 top-2 left-2 text-lg"
+                    always
+                  />
                   <label className="text-sm bg-white/90 hover:bg-white p-2 m-2 rounded cursor-pointer">
                     Upload
                     <input
@@ -313,42 +409,59 @@ const AboutAdminEditor = () => {
             <div className="flex p-px lg:col-span-4 ">
               <div className="overflow-hidden w-full rounded-lg border bg-zinc-50 border-gray-200 max-lg:rounded-b-[2rem] lg:rounded-br-[2rem]">
                 <div className="p-8">
-                  <input
-                    type="text"
-                    value={formData.aboutSection2.heading}
-                    onChange={e =>
-                      handleNestedChange(
-                        "aboutSection2",
-                        "heading",
-                        e.target.value
-                      )
-                    }
-                    className="text-sm font-semibold text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
-                  />
-                  <input
-                    type="text"
-                    value={formData.aboutSection2.subheading}
-                    onChange={e =>
-                      handleNestedChange(
-                        "aboutSection2",
-                        "subheading",
-                        e.target.value
-                      )
-                    }
-                    className="mt-3 text-xl font-semibold tracking-tight text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
-                  />
-                  <textarea
-                    value={formData.aboutSection2.text}
-                    onChange={e =>
-                      handleNestedChange(
-                        "aboutSection2",
-                        "text",
-                        e.target.value
-                      )
-                    }
-                    className="mt-3 max-w-2xl text-base text-blue-700 leading-relaxed w-full bg-blue-50 border border-blue-200 rounded-md p-2"
-                    rows={4}
-                  />
+                  {/* HEADING */}
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={formData.aboutSection2.heading}
+                      onChange={e =>
+                        handleNestedChange(
+                          "aboutSection2",
+                          "heading",
+                          e.target.value
+                        )
+                      }
+                      maxLength={HEAD_MAX}
+                      className="text-sm font-semibold text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
+                    />
+                    <Hint text={`Heading · ${HEAD_MIN}–${HEAD_MAX}`} />
+                  </div>
+
+                  {/* SUBHEADING */}
+                  <div className="relative group mt-3">
+                    <input
+                      type="text"
+                      value={formData.aboutSection2.subheading}
+                      onChange={e =>
+                        handleNestedChange(
+                          "aboutSection2",
+                          "subheading",
+                          e.target.value
+                        )
+                      }
+                      maxLength={SUB_MAX}
+                      className="text-xl font-semibold tracking-tight text-blue-700 w-full bg-blue-50 border border-blue-200 rounded-md p-2"
+                    />
+                    <Hint text={`Subheading · ${SUB_MIN}–${SUB_MAX}`} />
+                  </div>
+
+                  {/* BODY TEXT */}
+                  <div className="relative group mt-3">
+                    <textarea
+                      value={formData.aboutSection2.text}
+                      onChange={e =>
+                        handleNestedChange(
+                          "aboutSection2",
+                          "text",
+                          e.target.value
+                        )
+                      }
+                      maxLength={TEXT_MAX}
+                      rows={4}
+                      className="max-w-2xl resize-none text-base text-blue-700 leading-relaxed w-full bg-blue-50 border border-blue-200 rounded-md p-2"
+                    />
+                    <Hint text={`Text · ${TEXT_MIN}–${TEXT_MAX}`} />
+                  </div>
                 </div>
               </div>
             </div>

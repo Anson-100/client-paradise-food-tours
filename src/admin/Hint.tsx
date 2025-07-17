@@ -27,7 +27,7 @@ export default function Hint({
     : "opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150"
 
   return (
-    <span className={`absolute -top-4 left-2 z-20 ${visibility} ${className}`}>
+    <span className={`absolute -top-6 left-2 z-20 ${visibility} ${className}`}>
       <span className="flex items-start gap-1 px-2 py-1 rounded border border-teal-500 bg-white sm:text-xs font-semibold text-gray-700 shadow">
         <InformationCircleIcon className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />
         <span>
